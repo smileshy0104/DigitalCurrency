@@ -6,10 +6,9 @@ package server
 
 import (
 	"context"
-
-	"ucenter/api/register/internal/logic"
-	"ucenter/api/register/internal/svc"
-	"ucenter/api/types/register"
+	"grpc-common/ucenter/types/register"
+	"ucenter/internal/logic"
+	"ucenter/internal/svc"
 )
 
 type RegisterServer struct {

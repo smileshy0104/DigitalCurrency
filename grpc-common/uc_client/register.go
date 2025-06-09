@@ -2,15 +2,13 @@
 // goctl 1.8.3
 // Source: register.proto
 
-package register_client
+package uc_client
 
 import (
 	"context"
-
-	"ucenter/api/types/register"
-
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
+	"grpc-common/ucenter/types/register"
 )
 
 type (
