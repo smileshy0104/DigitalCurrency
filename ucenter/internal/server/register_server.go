@@ -23,6 +23,6 @@ func NewRegisterServer(svcCtx *svc.ServiceContext) *RegisterServer {
 }
 
 func (s *RegisterServer) RegisterByPhone(ctx context.Context, in *register.RegReq) (*register.RegRes, error) {
-	l := logic.NewRegisterByPhoneLogic(ctx, s.svcCtx)
+	l := logic.NewRegisterLogic(ctx, s.svcCtx)
 	return l.RegisterByPhone(in)
 }
