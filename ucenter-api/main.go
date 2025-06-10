@@ -23,7 +23,9 @@ func main() {
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
-	handler.RegisterHandlers(server, ctx)
+	// 注册路由
+	routers := handler.NewRouters(server)
+	handler.RegisterHandlers(routers, ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

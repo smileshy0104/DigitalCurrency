@@ -24,6 +24,6 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 
 func (l *RegisterLogic) Register(req *types.Request) (resp *types.Response, err error) {
 	// todo: add your logic here and delete this line
-
+	logx.Info("Register api")
 	return
 }
