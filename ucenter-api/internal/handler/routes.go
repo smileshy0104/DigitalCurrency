@@ -7,7 +7,7 @@ import (
 
 type Routers struct {
 	server      *rest.Server
-	middlewares []rest.Middleware
+	middlewares []rest.Middleware // 中间件
 }
 
 func NewRouters(server *rest.Server) *Routers {
