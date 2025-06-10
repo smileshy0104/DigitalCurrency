@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 	"ucenter-api/internal/config"
 	"ucenter-api/internal/handler"
 	"ucenter-api/internal/svc"
@@ -18,6 +19,7 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
+	logx.MustSetup(logx.LogConf{Stat: false, Encoding: "plain"})
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
