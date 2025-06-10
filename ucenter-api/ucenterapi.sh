@@ -1,0 +1,1 @@
+goctl api new ucenterapi --style go_zero
