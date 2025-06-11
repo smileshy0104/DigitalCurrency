@@ -19,7 +19,8 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
-	logx.MustSetup(logx.LogConf{Stat: false, Encoding: "plain"})
+	//防止打印过多的日志
+	logx.MustSetup(logx.LogConf{Encoding: "plain", Stat: false})
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()

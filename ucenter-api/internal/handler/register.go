@@ -18,6 +18,22 @@ func NewRegisterHandler(svcCtx *svc.ServiceContext) *RegisterHandler {
 	}
 }
 
+func (h *RegisterHandler) SendCode(w http.ResponseWriter, r *http.Request) {
+	var req types.Request
+	//if err := httpx.Parse(r, &req); err != nil {
+	//	httpx.ErrorCtx(r.Context(), w, err)
+	//	return
+	//}
+
+	l := logic.NewRegisterLogic(r.Context(), h.svcCtx)
+	resp, err := l.Register(&req)
+	if err != nil {
+		httpx.ErrorCtx(r.Context(), w, err)
+	} else {
+		httpx.OkJsonCtx(r.Context(), w, resp)
+	}
+}
+
 func (h *RegisterHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var req types.Request
 	//if err := httpx.Parse(r, &req); err != nil {
