@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"common"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 	"ucenter-api/internal/logic"
@@ -43,9 +44,11 @@ func (h *RegisterHandler) SendCode(w http.ResponseWriter, r *http.Request) {
 
 	l := logic.NewRegisterLogic(r.Context(), h.svcCtx)
 	resp, err := l.SendCode(&req)
-	if err != nil {
-		httpx.ErrorCtx(r.Context(), w, err)
-	} else {
-		httpx.OkJsonCtx(r.Context(), w, resp)
-	}
+	result := common.NewResult().Deal(resp, err)
+	httpx.OkJsonCtx(r.Context(), w, result)
+	//if err != nil {
+	//	httpx.ErrorCtx(r.Context(), w, err)
+	//} else {
+	//	httpx.OkJsonCtx(r.Context(), w, resp)
+	//}
 }
