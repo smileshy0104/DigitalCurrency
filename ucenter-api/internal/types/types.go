@@ -23,3 +23,12 @@ type CaptchaReq struct {
 type Response struct {
 	Message string `json:"message"`
 }
+
+type CodeRequest struct {
+	Phone   string `json:"phone"`
+	Country string `json:"country"`
+}
+
+type CodeResponse struct {
+	Token string `json:"token"`
+}

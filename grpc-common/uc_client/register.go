@@ -6,18 +6,22 @@ package uc_client
 
 import (
 	"context"
+	"grpc-common/ucenter/types/register"
+
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
-	"grpc-common/ucenter/types/register"
 )
 
 type (
 	CaptchaReq = register.CaptchaReq
+	CodeReq    = register.CodeReq
+	NoRes      = register.NoRes
 	RegReq     = register.RegReq
 	RegRes     = register.RegRes
 
 	Register interface {
 		RegisterByPhone(ctx context.Context, in *RegReq, opts ...grpc.CallOption) (*RegRes, error)
+		SendCode(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*NoRes, error)
 	}
 
 	defaultRegister struct {
@@ -34,4 +38,9 @@ func NewRegister(cli zrpc.Client) Register {
 func (m *defaultRegister) RegisterByPhone(ctx context.Context, in *RegReq, opts ...grpc.CallOption) (*RegRes, error) {
 	client := register.NewRegisterClient(m.cli.Conn())
 	return client.RegisterByPhone(ctx, in, opts...)
+}
+
+func (m *defaultRegister) SendCode(ctx context.Context, in *CodeReq, opts ...grpc.CallOption) (*NoRes, error) {
+	client := register.NewRegisterClient(m.cli.Conn())
+	return client.SendCode(ctx, in, opts...)
 }

@@ -18,7 +18,7 @@ func NewRegisterHandler(svcCtx *svc.ServiceContext) *RegisterHandler {
 	}
 }
 
-func (h *RegisterHandler) SendCode(w http.ResponseWriter, r *http.Request) {
+func (h *RegisterHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var req types.Request
 	//if err := httpx.Parse(r, &req); err != nil {
 	//	httpx.ErrorCtx(r.Context(), w, err)
@@ -34,15 +34,15 @@ func (h *RegisterHandler) SendCode(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *RegisterHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var req types.Request
-	//if err := httpx.Parse(r, &req); err != nil {
-	//	httpx.ErrorCtx(r.Context(), w, err)
-	//	return
-	//}
+func (h *RegisterHandler) SendCode(w http.ResponseWriter, r *http.Request) {
+	var req types.CodeRequest
+	if err := httpx.ParseJsonBody(r, &req); err != nil {
+		httpx.ErrorCtx(r.Context(), w, err)
+		return
+	}
 
 	l := logic.NewRegisterLogic(r.Context(), h.svcCtx)
-	resp, err := l.Register(&req)
+	resp, err := l.SendCode(&req)
 	if err != nil {
 		httpx.ErrorCtx(r.Context(), w, err)
 	} else {
