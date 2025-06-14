@@ -14,3 +14,6 @@ UCenterRpc:
       - 127.0.0.1:2379
     # 定义在Etcd中存储的键名，用于服务发现
     Key: ucenter.rpc
+JWT:
+  AccessSecret: "!@#$mscoin"
+  AccessExpire: 604800

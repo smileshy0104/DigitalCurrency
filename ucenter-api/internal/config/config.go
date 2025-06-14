@@ -11,4 +11,10 @@ type Config struct {
 	rest.RestConf
 	// UCenterRpc 是用户中心服务的 RPC 配置，通过它来配置与用户中心服务的 RPC 通信。
 	UCenterRpc zrpc.RpcClientConf
+	JWT        AuthConfig
+}
+
+type AuthConfig struct {
+	AccessSecret string
+	AccessExpire int64
 }

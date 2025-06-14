@@ -25,4 +25,11 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 
 	// 在路由组中注册发送验证码处理函数，处理发送移动电话验证码的请求。
 	registerGroup.Post("/uc/mobile/code", register.SendCode)
+
+	// 创建一个新的登录处理实例。
+	login := NewLoginHandler(serverCtx)
+	loginGroup := r.Group()
+	// 在路由组中注册用户登录处理函数，处理用户登录的请求。
+	loginGroup.Post("/uc/login", login.Login)
+	loginGroup.Post("/uc/check/login", login.CheckLogin)
 }
