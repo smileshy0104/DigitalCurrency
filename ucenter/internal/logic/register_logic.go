@@ -19,6 +19,7 @@ type RegisterLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	CaptchaDomain *domain.CaptchaDomain
+	MemberDomain  *domain.MemberDomain
 }
 
 func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RegisterLogic {
@@ -27,6 +28,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 		svcCtx:        svcCtx,
 		Logger:        logx.WithContext(ctx),
 		CaptchaDomain: domain.NewCaptchaDomain(svcCtx),
+		MemberDomain:  domain.NewMemberDomain(svcCtx.Db),
 	}
 }
 
@@ -52,25 +54,25 @@ func (l *RegisterLogic) RegisterByPhone(in *register.RegReq) (*register.RegRes, 
 		return nil, errors.New("验证码输入错误")
 	}
 	//3.验证码通过 进行注册即可 手机号首先验证此手机号是否注册过
-	//mem, err := l.MemberDomain.FindByPhone(context.Background(), in.Phone)
-	//if err != nil {
-	//	return nil, errors.New("服务异常，请联系管理员")
-	//}
-	//if mem != nil {
-	//	return nil, errors.New("此手机号已经被注册")
-	//}
-	////4. 生成member模型，存入数据库
-	//err = l.MemberDomain.Register(
-	//	context.Background(),
-	//	in.Phone,
-	//	in.Password,
-	//	in.Username,
-	//	in.Country,
-	//	in.SuperPartner,
-	//	in.Promotion)
-	//if err != nil {
-	//	return nil, errors.New("注册失败")
-	//}
+	mem, err := l.MemberDomain.FindByPhone(context.Background(), in.Phone)
+	if err != nil {
+		return nil, errors.New("服务异常，请联系管理员")
+	}
+	if mem != nil {
+		return nil, errors.New("此手机号已经被注册")
+	}
+	//4. 生成member模型，存入数据库
+	err = l.MemberDomain.Register(
+		context.Background(),
+		in.Phone,
+		in.Password,
+		in.Username,
+		in.Country,
+		in.SuperPartner,
+		in.Promotion)
+	if err != nil {
+		return nil, errors.New("注册失败")
+	}
 	return &register.RegRes{}, nil
 }
 

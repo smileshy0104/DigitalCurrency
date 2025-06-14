@@ -10,7 +10,7 @@ import (
 type ServiceContext struct {
 	Config config.Config
 	Cache  cache.Cache
-	DB     *db.DB
+	Db     *db.DB
 }
 
 // NewServiceContext 创建并初始化一个新的服务上下文。
@@ -33,6 +33,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config: c,
 		Cache:  redisCache,
-		DB:     mysql,
+		Db:     mysql,
 	}
 }
