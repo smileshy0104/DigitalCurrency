@@ -8,29 +8,25 @@ import (
 	"hash"
 )
 
+// 默认常量定义盐值长度、迭代次数和密钥长度
 const (
-	defaultSaltLen    = 64
-	defaultIterations = 10000
-	defaultKeyLen     = 128
+	defaultSaltLen    = 64    // 默认盐值长度为64字节
+	defaultIterations = 10000 // 默认PBKDF2迭代次数为10000次
+	defaultKeyLen     = 128   // 默认生成的密钥长度为128字节
 )
 
-// 123456+!@##$$%%
+// 默认使用的哈希算法为 SHA-512
 var defaultHashFunction = sha512.New
 
-// Options is a struct for custom values of salt length, number of iterations, the encoded key's length,
-// and the hash function being used. If set to `nil`, default options are used:
-// &Options{ 64, 10000, 128, "sha512" }
-// SaltLen：用户生成的长度，默认64
-// Iterations： PBKDF2函数中的迭代次数，默认10000
-// KeyLen：BKDF2函数中编码密钥的长度，默认128
-// HashFunction： 使用的哈希算法，默认sha512
+// Options 结构体用于自定义 PBKDF2 参数，包括盐值长度、迭代次数、密钥长度和哈希函数
 type Options struct {
-	SaltLen      int
-	Iterations   int
-	KeyLen       int
-	HashFunction func() hash.Hash
+	SaltLen      int              // 自定义盐值长度
+	Iterations   int              // 自定义迭代次数
+	KeyLen       int              // 自定义密钥长度
+	HashFunction func() hash.Hash // 自定义哈希函数（如 sha512.New）
 }
 
+// generateSalt 生成指定长度的随机盐值，使用字母数字字符
 func generateSalt(length int) []byte {
 	const alphanum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	salt := make([]byte, length)
@@ -41,26 +37,45 @@ func generateSalt(length int) []byte {
 	return salt
 }
 
-// Encode takes two arguments, a raw password, and a pointer to an Options struct.
-// In order to use default options, pass `nil` as the second argument.
-// It returns the generated salt and encoded key for the user.
+// Encode 对原始密码进行加密编码
+// 参数:
+//
+//	rawPwd string - 原始密码
+//	options *Options - 自定义参数选项，如果为 nil 则使用默认参数
+//
+// 返回值:
+//
+//	string - 生成的盐值
+//	string - 加密后的密码（十六进制格式）
 func Encode(rawPwd string, options *Options) (string, string) {
 	if options == nil {
+		// 使用默认配置
 		salt := generateSalt(defaultSaltLen)
 		encodedPwd := pbkdf2.Key([]byte(rawPwd), salt, defaultIterations, defaultKeyLen, defaultHashFunction)
 		return string(salt), hex.EncodeToString(encodedPwd)
 	}
+	// 使用自定义配置
 	salt := generateSalt(options.SaltLen)
 	encodedPwd := pbkdf2.Key([]byte(rawPwd), salt, options.Iterations, options.KeyLen, options.HashFunction)
 	return string(salt), hex.EncodeToString(encodedPwd)
 }
 
-// Verify takes four arguments, the raw password, its generated salt, the encoded password,
-// and a pointer to the Options struct, and returns a boolean value determining whether the password is the correct one or not.
-// Passing `nil` as the last argument resorts to default options.
+// Verify 验证原始密码是否与已加密的密码匹配
+// 参数:
+//
+//	rawPwd string - 原始密码
+//	salt string - 之前生成的盐值
+//	encodedPwd string - 已加密的密码（十六进制格式）
+//	options *Options - 自定义参数选项，如果为 nil 则使用默认参数
+//
+// 返回值:
+//
+//	bool - 是否匹配
 func Verify(rawPwd string, salt string, encodedPwd string, options *Options) bool {
 	if options == nil {
+		// 使用默认配置验证
 		return encodedPwd == hex.EncodeToString(pbkdf2.Key([]byte(rawPwd), []byte(salt), defaultIterations, defaultKeyLen, defaultHashFunction))
 	}
+	// 使用自定义配置验证
 	return encodedPwd == hex.EncodeToString(pbkdf2.Key([]byte(rawPwd), []byte(salt), options.Iterations, options.KeyLen, options.HashFunction))
 }
