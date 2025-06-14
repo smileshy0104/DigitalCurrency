@@ -7,10 +7,11 @@ import (
 	"ucenter/internal/database"
 )
 
+// ServiceContext 服务上下文结构体
 type ServiceContext struct {
-	Config config.Config
-	Cache  cache.Cache
-	Db     *db.DB
+	Config config.Config // 配置文件对象
+	Cache  cache.Cache   // 缓存组件
+	Db     *db.DB        // 数据库连接
 }
 
 // NewServiceContext 创建并初始化一个新的服务上下文。
@@ -28,6 +29,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		cache.NewStat("mscoin"),
 		nil,
 		func(o *cache.Options) {})
+	// 初始化MySQL数据库连接。
 	mysql := database.ConnMysql(c.Mysql.DataSource)
 	// 返回新的服务上下文对象，包含配置对象和初始化后的缓存组件。
 	return &ServiceContext{

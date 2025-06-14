@@ -1,18 +1,31 @@
+# 定义服务的名称
 Name: ucenter.rpc
+# 指定服务监听的地址和端口
 ListenOn: 127.0.0.1:8081
 
+# 配置Etcd相关信息
 Etcd:
+  # Etcd主机列表
   Hosts:
-  - 127.0.0.1:2379
+    - 127.0.0.1:2379
+  # 在Etcd中注册的服务键名
   Key: ucenter.rpc
 
+# 配置MySQL数据库连接信息
 Mysql:
+  # 数据源连接字符串，包含用户名、密码、主机、端口和数据库名，以及字符集和时区设置
   DataSource: root:123456@tcp(127.0.0.1:3309)/mscoin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 
+# 配置CacheRedis相关信息
 CacheRedis:
+  # Redis节点信息
   - Host: 127.0.0.1:6379
     Type: node
 
+# 配置验证码服务相关信息
 Captcha:
+  # 验证码服务的Vid（Vendor ID）
   Vid: 63fec1c3507890ee2e7f9dd1
+  # 验证码服务的Key
   Key: ca8f1bdc1ee5438b830aac9beef314e9
+

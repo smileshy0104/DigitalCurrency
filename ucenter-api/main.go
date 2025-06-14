@@ -17,7 +17,7 @@ var configFile = flag.String("f", "etc/conf.yaml", "the config file")
 
 func main() {
 	flag.Parse()
-
+	// 读取配置文件
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	//防止打印过多的日志
@@ -28,7 +28,7 @@ func main() {
 		header.Set("Access-Control-Allow-Headers", "DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,token,x-auth-token")
 	}, nil, "http://localhost:8080"))
 	defer server.Stop()
-
+	// 创建并初始化一个新的服务上下文（初始化各个组件）
 	ctx := svc.NewServiceContext(c)
 	// 注册路由
 	routers := handler.NewRouters(server)

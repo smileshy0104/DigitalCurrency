@@ -1,9 +1,16 @@
+# 定义服务的名称
 Name: ucenter-api
+# 指定服务运行的主机地址
 Host: 127.0.0.1
+# 指定服务运行的端口号
 Port: 8888
 
+# 定义UCenterRpc服务的配置
 UCenterRpc:
+  # 使用Etcd作为服务发现和配置管理的后端
   Etcd:
+    # 指定Etcd集群的主机列表
     Hosts:
       - 127.0.0.1:2379
+    # 定义在Etcd中存储的键名，用于服务发现
     Key: ucenter.rpc

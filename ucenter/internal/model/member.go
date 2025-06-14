@@ -1,5 +1,6 @@
 package model
 
+// Member 结构体
 type Member struct {
 	Id                         int64   `gorm:"column:id"`
 	AliNo                      string  `gorm:"column:ali_no" default:"0"`
@@ -67,25 +68,33 @@ type Member struct {
 	MemberLevelId              int64   `gorm:"column:member_level_id"`
 }
 
+// 表名
 func (*Member) TableName() string {
 	return "member"
 }
 
+// Member 相关的常量定义，用于标识会员的不同属性和状态
 const (
-	GENERAL = iota
-	REALNAME
-	IDENTIFICATION
-)
-const (
-	NORMALPARTER = "0"
-	SUPERPARTER  = "1"
-	PSUPERPARTER = "2"
-)
-const (
-	NORMAL = iota
-	ILLEGAL
+	GENERAL        = iota // 普通会员
+	REALNAME              // 实名会员
+	IDENTIFICATION        // 认证商家
 )
 
+// Partner 类型的常量定义，用于区分合作伙伴的等级
+const (
+	NORMALPARTER = "0" // 普通合作伙伴
+	SUPERPARTER  = "1" // 超级合作伙伴
+	PSUPERPARTER = "2" // 更高级别的合作伙伴
+)
+
+// Member 状态常量定义
+const (
+	NORMAL  = iota // 正常状态
+	ILLEGAL        // 非法状态
+)
+
+// FillSuperPartner 根据传入的 partner 字符串设置会员的超级合作伙伴状态和会员状态
+// 参数 partner: 代表合作伙伴等级的字符串
 func (m *Member) FillSuperPartner(partner string) {
 	if partner == "" {
 		m.SuperPartner = NORMALPARTER
@@ -97,6 +106,9 @@ func (m *Member) FillSuperPartner(partner string) {
 		}
 	}
 }
+
+// MemberLevelStr 返回会员级别的字符串表示
+// 返回值: 会员级别的中文描述
 func (m *Member) MemberLevelStr() string {
 	if m.MemberLevel == GENERAL {
 		return "普通会员"
@@ -110,6 +122,8 @@ func (m *Member) MemberLevelStr() string {
 	return ""
 }
 
+// MemberRate 根据会员的超级合作伙伴状态返回会员费率
+// 返回值: 会员费率，以百分比表示
 func (m *Member) MemberRate() int32 {
 	if m.SuperPartner == NORMALPARTER {
 		return 0
@@ -123,6 +137,8 @@ func (m *Member) MemberRate() int32 {
 	return 0
 }
 
+// NewMember 创建并返回一个新的 Member 实例
+// 返回值: 新的 Member 实例的指针
 func NewMember() *Member {
 	return &Member{}
 }

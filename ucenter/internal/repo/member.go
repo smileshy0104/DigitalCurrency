@@ -5,6 +5,7 @@ import (
 	"ucenter/internal/model"
 )
 
+// Member Repo
 type MemberRepo interface {
 	FindByPhone(ctx context.Context, phone string) (*model.Member, error)
 	Save(ctx context.Context, mem *model.Member) error

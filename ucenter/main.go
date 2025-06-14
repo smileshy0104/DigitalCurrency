@@ -19,11 +19,13 @@ var configFile = flag.String("f", "etc/conf.yaml", "the config file")
 
 func main() {
 	flag.Parse()
-
+	// 加载配置文件
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
+	// 创建并初始化一个新的服务上下文（初始化各个组件）
 	ctx := svc.NewServiceContext(c)
 
+	// 创建一个新的 gRPC 服务器，并注册 RegisterServer 和反射服务
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		register.RegisterRegisterServer(grpcServer, server.NewRegisterServer(ctx))
 

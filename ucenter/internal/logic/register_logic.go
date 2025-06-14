@@ -12,8 +12,10 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
+// RegisterCacheKey 是验证码缓存的键前缀
 const RegisterCacheKey = "REGISTER::"
 
+// RegisterLogic 是处理注册逻辑的结构体
 type RegisterLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
@@ -22,7 +24,9 @@ type RegisterLogic struct {
 	MemberDomain  *domain.MemberDomain
 }
 
+// NewRegisterLogic 创建一个新的 RegisterLogic 实例
 func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RegisterLogic {
+	// 创建一个新的 CaptchaDomain 实例
 	return &RegisterLogic{
 		ctx:           ctx,
 		svcCtx:        svcCtx,
@@ -32,6 +36,9 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 	}
 }
 
+// RegisterByPhone 通过手机号码注册用户
+// 参数 in 包含注册所需的信息，如验证码、手机号码、密码等
+// 返回注册结果和错误信息（如果有）
 func (l *RegisterLogic) RegisterByPhone(in *register.RegReq) (*register.RegRes, error) {
 	//1. 先校验人机是否通过
 	isVerify := l.CaptchaDomain.Verify(
@@ -76,6 +83,9 @@ func (l *RegisterLogic) RegisterByPhone(in *register.RegReq) (*register.RegRes, 
 	return &register.RegRes{}, nil
 }
 
+// SendCode 发送验证码到指定手机号码
+// 参数 req 包含手机号码和国家标识
+// 返回发送结果和错误信息（如果有）
 func (l *RegisterLogic) SendCode(req *register.CodeReq) (*register.NoRes, error) {
 	//* 收到手机号和国家标识
 	//* 生成验证码
