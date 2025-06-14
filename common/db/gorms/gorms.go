@@ -14,7 +14,7 @@ type GormConn struct {
 // Begin 开启一个新的事务
 // 在需要执行一系列事务操作时调用此方法
 func (g *GormConn) Begin() {
-	g.tx = g.db.Begin()
+	g.tx = g.db.Begin() // 开启一个新的事务
 }
 
 // New 创建并返回一个新的 GormConn 实例
