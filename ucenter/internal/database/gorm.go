@@ -1,7 +1,7 @@
 package database
 
 import (
-	"common/database"
+	"common/db"
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"gorm.io/driver/mysql"
@@ -14,7 +14,7 @@ type DBConn struct {
 	CacheConn sqlc.CachedConn
 }
 
-func ConnMysql(dsn string) *database.DB {
+func ConnMysql(dsn string) *db.DB {
 	var err error
 	_db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
@@ -22,11 +22,11 @@ func ConnMysql(dsn string) *database.DB {
 	if err != nil {
 		panic("连接数据库失败, error=" + err.Error())
 	}
-	db, _ := _db.DB()
+	sqlDb, _ := _db.DB()
 	//连接池配置
-	db.SetMaxOpenConns(100)
-	db.SetMaxIdleConns(10)
-	return &database.DB{
+	sqlDb.SetMaxOpenConns(100)
+	sqlDb.SetMaxIdleConns(10)
+	return &db.DB{
 		_db,
 	}
 }

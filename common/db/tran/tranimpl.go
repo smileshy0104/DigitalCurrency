@@ -1,16 +1,16 @@
 package tran
 
 import (
-	"common/database"
-	"common/database/gorms"
+	"common/db"
+	"common/db/gorms"
 	"gorm.io/gorm"
 )
 
 type TransactionImpl struct {
-	conn database.DbConn
+	conn db.DbConn
 }
 
-func (t *TransactionImpl) Action(f func(conn database.DbConn) error) error {
+func (t *TransactionImpl) Action(f func(conn db.DbConn) error) error {
 	t.conn.Begin()
 	err := f(t.conn)
 	if err != nil {
