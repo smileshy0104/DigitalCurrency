@@ -3,7 +3,6 @@ package handler
 import (
 	"common"
 	"common/tools"
-	"errors"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 	"ucenter-api/internal/logic"
@@ -35,10 +34,10 @@ func (h *RegisterHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 	newResult := common.NewResult()
 	// 验证验证码，如果验证码为空则返回错误信息.
-	if req.Captcha == nil {
-		httpx.OkJsonCtx(r.Context(), w, newResult.Deal(nil, errors.New("人机校验不通过")))
-		return
-	}
+	//if req.Captcha == nil {
+	//	httpx.OkJsonCtx(r.Context(), w, newResult.Deal(nil, errors.New("人机校验不通过")))
+	//	return
+	//}
 	//获取一下ip
 	req.Ip = tools.GetRemoteClientIp(r)
 	// 创建注册逻辑实例，并调用注册逻辑.

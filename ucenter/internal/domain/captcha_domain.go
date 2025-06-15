@@ -1,9 +1,6 @@
 package domain
 
 import (
-	"common/tools"
-	"encoding/json"
-	"github.com/zeromicro/go-zero/core/logx"
 	"ucenter/internal/svc"
 )
 
@@ -56,24 +53,24 @@ func (d *CaptchaDomain) Verify(
 	token string,
 	scene int,
 	ip string) bool {
-	// 发送一个post请求
-	resp, err := tools.Post(server, &vaptchaReq{
-		Id:        vid,
-		Secretkey: key,
-		Token:     token,
-		Scene:     scene,
-		Ip:        ip,
-	})
-	if err != nil {
-		logx.Error(err)
-		return false
-	}
+	//// 发送一个post请求
+	//resp, err := tools.Post(server, &vaptchaReq{
+	//	Id:        vid,
+	//	Secretkey: key,
+	//	Token:     token,
+	//	Scene:     scene,
+	//	Ip:        ip,
+	//})
+	//if err != nil {
+	//	logx.Error(err)
+	//	return false
+	//}
 	result := &vaptchaRsp{}
-	err = json.Unmarshal(resp, result)
-	if err != nil {
-		logx.Error(err)
-		return false
-	}
+	//err = json.Unmarshal(resp, result)
+	//if err != nil {
+	//	logx.Error(err)
+	//	return false
+	//}
 	// 判断验证结果是否成功
 	return result.Success == 1
 }

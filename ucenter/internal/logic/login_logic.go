@@ -33,16 +33,16 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 
 func (l *LoginLogic) Login(in *login.LoginReq) (*login.LoginRes, error) {
 	//1. 先校验人机是否通过
-	isVerify := l.CaptchaDomain.Verify(
-		in.Captcha.Server,
-		l.svcCtx.Config.Captcha.Vid,
-		l.svcCtx.Config.Captcha.Key,
-		in.Captcha.Token,
-		2,
-		in.Ip)
-	if !isVerify {
-		return nil, errors.New("人机校验不通过")
-	}
+	//isVerify := l.CaptchaDomain.Verify(
+	//	in.Captcha.Server,
+	//	l.svcCtx.Config.Captcha.Vid,
+	//	l.svcCtx.Config.Captcha.Key,
+	//	in.Captcha.Token,
+	//	2,
+	//	in.Ip)
+	//if !isVerify {
+	//	return nil, errors.New("人机校验不通过")
+	//}
 	//2. 校验密码
 	member, err := l.MemberDomain.FindByPhone(context.Background(), in.GetUsername())
 	if err != nil {

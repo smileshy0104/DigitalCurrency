@@ -3,7 +3,6 @@ package handler
 import (
 	"common"
 	"common/tools"
-	"errors"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 	"ucenter-api/internal/logic"
@@ -32,10 +31,10 @@ func (h *LoginHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	newResult := common.NewResult()
-	if req.Captcha == nil {
-		httpx.OkJsonCtx(r.Context(), w, newResult.Deal(nil, errors.New("人机校验不通过")))
-		return
-	}
+	//if req.Captcha == nil {
+	//	httpx.OkJsonCtx(r.Context(), w, newResult.Deal(nil, errors.New("人机校验不通过")))
+	//	return
+	//}
 	//获取一下ip
 	req.Ip = tools.GetRemoteClientIp(r)
 	l := logic.NewLoginLogic(r.Context(), h.svcCtx)

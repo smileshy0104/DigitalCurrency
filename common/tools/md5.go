@@ -12,7 +12,7 @@ import (
 const (
 	defaultSaltLen    = 64    // 默认盐值长度为64字节
 	defaultIterations = 10000 // 默认PBKDF2迭代次数为10000次
-	defaultKeyLen     = 128   // 默认生成的密钥长度为128字节
+	defaultKeyLen     = 64    // 默认生成的密钥长度为128字节
 )
 
 // 默认使用的哈希算法为 SHA-512
