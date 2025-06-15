@@ -11,16 +11,20 @@ import (
 	"ucenter-api/internal/types"
 )
 
+// LoginHandler 处理登录相关的HTTP请求。
 type LoginHandler struct {
 	svcCtx *svc.ServiceContext
 }
 
+// NewLoginHandler 创建一个新的LoginHandler实例。
 func NewLoginHandler(svcCtx *svc.ServiceContext) *LoginHandler {
 	return &LoginHandler{
 		svcCtx: svcCtx,
 	}
 }
 
+// Login 处理用户登录请求。
+// 该方法解析请求体中的登录信息，验证用户身份，并返回登录结果。
 func (h *LoginHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var req types.LoginReq
 	if err := httpx.ParseJsonBody(r, &req); err != nil {
@@ -40,6 +44,8 @@ func (h *LoginHandler) Login(w http.ResponseWriter, r *http.Request) {
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 
+// CheckLogin 检查用户是否已登录。
+// 该方法通过HTTP头中的令牌验证用户登录状态，并返回验证结果。
 func (h *LoginHandler) CheckLogin(w http.ResponseWriter, r *http.Request) {
 	newResult := common.NewResult()
 	token := r.Header.Get("x-auth-token")
