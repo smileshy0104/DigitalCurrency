@@ -12,6 +12,7 @@ type Config struct {
 	Mysql              MysqlConfig     // MySQL 数据库配置
 	CacheRedis         cache.CacheConf // 缓存 Redis 配置，使用 go-zero 的缓存配置类型
 	Captcha            CaptchaConf     // 验证码配置
+	JWT                AuthConfig      // JWT 配置
 }
 
 // MysqlConfig 是 MySQL 数据库的配置结构体。
@@ -25,4 +26,9 @@ type MysqlConfig struct {
 type CaptchaConf struct {
 	Vid string // 验证码的 VID
 	Key string // 验证码的 Key
+}
+
+type AuthConfig struct {
+	AccessSecret string
+	AccessExpire int64
 }
