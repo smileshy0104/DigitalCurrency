@@ -3,6 +3,7 @@ go 1.24.2
 use (
 	./common
 	./grpc-common
+	./job-center
 	./ucenter
 	./ucenter-api
 )
