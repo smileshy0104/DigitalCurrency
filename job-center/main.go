@@ -1,4 +1,4 @@
-package job_center
+package main
 
 import (
 	"flag"

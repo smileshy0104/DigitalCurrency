@@ -1,9 +1,9 @@
 Okx:
-  ApiKey: "d5a748c6-214d-4fae-bef3-d32368ecbbe8"
-  SecretKey: "004148A48D9335E147963C6F5B9C4E63"
-  Pass: "Mszlu!@#$56789"
+  ApiKey: "86b2abb9-27f9-4d29-a338-b013c29f0a09"
+  SecretKey: "769AF93ACE96309A691661D6A52E1610"
+  Pass: "Yu1259581033.."
   Host: "https://www.okx.com"
-  Proxy: "http://localhost:10809"
+  Proxy: "http://localhost:7890"
 #Mongo:
 #  Url: "mongodb://localhost:27018"
 #  Username: "root"
