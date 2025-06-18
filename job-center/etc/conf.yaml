@@ -4,11 +4,11 @@ Okx:
   Pass: "Yu1259581033.."
   Host: "https://www.okx.com"
   Proxy: "http://localhost:7890"
-#Mongo:
-#  Url: "mongodb://localhost:27018"
-#  Username: "root"
-#  Password: "root123456"
-#  DataBase: "mscoin"
+Mongo:
+  Url: "mongodb://localhost:27018"
+  Username: "root"
+  Password: "root123456"
+  DataBase: "mscoin"
 #Kafka:
 #  Addr: localhost:9092
 #  WriteCap: 100

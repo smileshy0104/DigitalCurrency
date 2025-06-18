@@ -3,11 +3,13 @@ package svc
 import (
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"job-center/internal/config"
+	"job-center/internal/database"
 )
 
 type ServiceContext struct {
-	Config config.Config
-	Cache  cache.Cache
+	Config      config.Config
+	MongoClient *database.MongoClient
+	Cache       cache.Cache
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -18,7 +20,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		nil,
 		func(o *cache.Options) {})
 	return &ServiceContext{
-		Config: c,
-		Cache:  redisCache,
+		Config:      c,
+		MongoClient: database.ConnectMongo(c.Mongo),
+		Cache:       redisCache,
 	}
 }
