@@ -11,7 +11,7 @@ UCenterRpc:
   Etcd:
     # 指定Etcd集群的主机列表
     Hosts:
-      - 127.0.0.1:2379
+      - 8.153.166.227:2379
     # 定义在Etcd中存储的键名，用于服务发现
     Key: ucenter.rpc
 JWT:
