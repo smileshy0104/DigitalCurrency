@@ -30,6 +30,7 @@ func main() {
 		case <-exit:
 			log.Println("任务中心中断执行，开始clear资源")
 			t.Stop()
+			ctx.MongoClient.Disconnect()
 		}
 	}()
 	t.StartBlocking()
