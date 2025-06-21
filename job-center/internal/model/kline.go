@@ -4,6 +4,7 @@ import (
 	"common/tools"
 )
 
+// Kline k线 (使用bson)
 type Kline struct {
 	Period       string  `bson:"period,omitempty"`
 	OpenPrice    float64 `bson:"openPrice,omitempty"`
@@ -17,13 +18,33 @@ type Kline struct {
 	TimeStr      string  `bson:"timeStr,omitempty"`
 }
 
-// Table BTC/USDT  ETH/USDT  分表
+// Table 生成k线数据表名
+// 参数:
+//
+//	symbol - 交易对符号，如BTC/USDT
+//	period - k线周期，如1m, 5m
+//
+// 返回值:
+//
+//	表名字符串
 func (*Kline) Table(symbol, period string) string {
+	// 返回自定义表名字符串
 	return "exchange_kline_" + symbol + "_" + period
 }
 
+// NewKline 创建新的Kline实例
+// 参数:
+//
+//	data - 包含k线数据的字符串数组
+//	period - k线周期
+//
+// 返回值:
+//
+//	*Kline - 指向新创建的Kline实例的指针
 func NewKline(data []string, period string) *Kline {
+	// 将字符串数组的第一个元素转换为int64
 	toInt64 := tools.ToInt64(data[0])
+	// 创建新的Kline实例
 	return &Kline{
 		Time:         toInt64,
 		Period:       period,
@@ -38,6 +59,7 @@ func NewKline(data []string, period string) *Kline {
 	}
 }
 
+// OkxKlineRes OKX交易所k线响应数据结构
 type OkxKlineRes struct {
 	Code string     `json:"code"`
 	Msg  string     `json:"msg"`
