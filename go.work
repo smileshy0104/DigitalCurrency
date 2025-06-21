@@ -4,6 +4,8 @@ use (
 	./common
 	./grpc-common
 	./job-center
+	./market
+	./market-api
 	./ucenter
 	./ucenter-api
 )
