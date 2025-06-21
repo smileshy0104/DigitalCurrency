@@ -7,9 +7,10 @@ import (
 	"job-center/internal/logic"
 )
 
+// 配置文件
 type Config struct {
-	Okx        logic.OkxConfig
-	Mongo      database.MongoConfig
-	CacheRedis cache.CacheConf
-	UCenterRpc zrpc.RpcClientConf
+	Okx        logic.OkxConfig      // okx配置
+	Mongo      database.MongoConfig // mongo配置
+	CacheRedis cache.CacheConf      // redis配置
+	UCenterRpc zrpc.RpcClientConf   // ucenter rpc
 }

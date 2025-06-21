@@ -70,6 +70,7 @@ func (k *Kline) getKlineData(instId string, symbol string, period string) {
 		k.wg.Done()
 		return
 	}
+	// 解析数据
 	var result = &OkxResult{}
 	err = json.Unmarshal(resp, result)
 	if err != nil {
@@ -82,6 +83,7 @@ func (k *Kline) getKlineData(instId string, symbol string, period string) {
 	log.Println("==================End====================")
 }
 
+// NewKline 创建Kline实例
 func NewKline(c OkxConfig, cache2 cache.Cache) *Kline {
 	return &Kline{
 		c:  c,
