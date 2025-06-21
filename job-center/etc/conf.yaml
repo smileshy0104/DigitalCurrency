@@ -3,9 +3,9 @@ Okx:
   SecretKey: "769AF93ACE96309A691661D6A52E1610"
   Pass: "Yu1259581033.."
   Host: "https://www.okx.com"
-  Proxy: "http://localhost:7890"
+  Proxy: "http://localhost:7890" # 测试代理
 Mongo:
-  Url: "mongodb://localhost:27018"
+  Url: "mongodb://8.153.166.227:27018"
   Username: "root"
   Password: "root123456"
   DataBase: "mscoin"
@@ -14,12 +14,12 @@ Mongo:
 #  WriteCap: 100
 #  ReadCap: 100
 CacheRedis:
-  - Host: 127.0.0.1:6379
+  - Host: 8.153.166.227:6379
     Type: node
 UCenterRpc:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - 8.153.166.227:2379
     Key: ucenter.rpc
 #Bitcoin:
 #  Address: http://127.0.0.1:18332
