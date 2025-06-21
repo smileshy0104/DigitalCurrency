@@ -1,0 +1,16 @@
+# 定义服务的名称
+Name: market-api
+# 指定服务运行的主机地址
+Host: 127.0.0.1
+# 指定服务运行的端口号
+Port: 8889
+
+# 定义MarketRpc服务的配置
+MarketRpc:
+  # 使用Etcd作为服务发现和配置管理的后端
+  Etcd:
+    # 指定Etcd集群的主机列表
+    Hosts:
+      - 8.153.166.227:2379
+    # 定义在Etcd中存储的键名，用于服务发现
+    Key: market.rpc
