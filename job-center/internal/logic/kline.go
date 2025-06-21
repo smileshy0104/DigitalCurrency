@@ -4,6 +4,8 @@ import (
 	"common/tools"
 	"encoding/json"
 	"github.com/zeromicro/go-zero/core/stores/cache"
+	"job-center/internal/database"
+	"job-center/internal/domain"
 	"log"
 	"sync"
 	"time"
@@ -27,9 +29,10 @@ type OkxResult struct {
 
 // Kline 结构体用于处理K线数据
 type Kline struct {
-	wg sync.WaitGroup // 用于同步控制
-	c  OkxConfig      // OKX配置
-	ch cache.Cache    // 缓存接口
+	wg          sync.WaitGroup      // 用于同步控制
+	c           OkxConfig           // OKX配置
+	klineDomain *domain.KlineDomain // K线处理模块
+	ch          cache.Cache         // 缓存接口
 }
 
 // Do 方法用于并发获取指定交易对的K线数据。
@@ -84,9 +87,10 @@ func (k *Kline) getKlineData(instId string, symbol string, period string) {
 }
 
 // NewKline 创建Kline实例
-func NewKline(c OkxConfig, cache2 cache.Cache) *Kline {
+func NewKline(c OkxConfig, mongoClient *database.MongoClient, cache2 cache.Cache) *Kline {
 	return &Kline{
-		c:  c,
-		ch: cache2,
+		c:           c,
+		klineDomain: domain.NewKlineDomain(mongoClient),
+		ch:          cache2,
 	}
 }
