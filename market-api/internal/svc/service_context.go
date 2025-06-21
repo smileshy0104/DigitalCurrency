@@ -10,7 +10,8 @@ import (
 // 它是服务运行环境的集合，通过它可以在服务的各个部分之间共享配置和资源。
 type ServiceContext struct {
 	// Config 是服务的配置信息，包含了服务运行所需的各种参数和设置。
-	Config          config.Config
+	Config config.Config
+	// ExchangeRateRpc 是一个 RPC 客户端，用于调用汇率服务。
 	ExchangeRateRpc mk_client.ExchangeRate
 }
 

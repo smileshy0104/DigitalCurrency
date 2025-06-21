@@ -14,8 +14,9 @@ import (
 //	r *Routers - 路由器指针，用于注册处理函数。
 //	serverCtx *svc.ServiceContext - 服务上下文指针，包含处理函数所需的上下文信息。
 func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
-	//如果要有中间件 怎么办？
+	// 创建一个新的处理函数实例。
 	rate := NewExchangeRateHandler(serverCtx)
 	rateGroup := r.Group()
+	// 在路由组中注册处理函数，处理获取美元汇率的请求。
 	rateGroup.Post("/exchange-rate/usd/:unit", rate.UsdRate)
 }
