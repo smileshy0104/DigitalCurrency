@@ -30,7 +30,7 @@ func main() {
 	// 创建并初始化一个新的服务上下文（初始化各个组件）
 	ctx := svc.NewServiceContext(c)
 	// 注册路由
-	routers := handler.NewRouters(server)
+	routers := handler.NewRouters(server, c.Prefix)
 	handler.RegisterHandlers(routers, ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
