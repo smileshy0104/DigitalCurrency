@@ -39,7 +39,7 @@ func (k *KlineDao) DeleteGtTime(ctx context.Context, time int64, symbol string, 
 	collection := k.db.Collection(mk.Table(symbol, period))
 
 	// 执行删除操作并处理结果。
-	// 删除条件为时间大于等于给定时间。
+	// 使用bson.D结构体创建删除条件。bson.D{{"time", bson.D{{"$gte", time}}}} 表示删除时间大于等于给定时间的数据。
 	deleteResult, err := collection.DeleteMany(ctx, bson.D{{"time", bson.D{{"$gte", time}}}})
 	if err != nil {
 		return err

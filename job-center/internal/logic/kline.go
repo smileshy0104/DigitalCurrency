@@ -82,6 +82,21 @@ func (k *Kline) getKlineData(instId string, symbol string, period string) {
 		return
 	}
 	log.Println("==================执行存储mongo====================")
+	if result.Code == "0" {
+		//代表成功
+		k.klineDomain.SaveBatch(result.Data, symbol, period)
+		//if "1m" == period {
+		//	//把这个最新的数据result.Data[0] 推送到market服务，推送到前端页面，实时进行变化
+		//	//->kafka->market kafka消费者进行数据消费-> 通过websocket通道发送给前端 ->前端更新数据
+		//	if len(result.Data) > 0 {
+		//		data := result.Data[0]
+		//		k.queueDomain.Send1mKline(data, symbol)
+		//		//放入redis 将其最新的价格
+		//		key := strings.ReplaceAll(instId, "-", "::")
+		//		k.ch.Set(key+"::RATE", data[4])
+		//	}
+		//}
+	}
 	k.wg.Done()
 	log.Println("==================End====================")
 }
