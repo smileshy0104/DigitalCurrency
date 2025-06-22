@@ -15,7 +15,6 @@ type MarketServer struct {
 	market.UnimplementedMarketServer
 }
 
-func (e *MarketServer) FindSymbolThumbTrend(ctx context.Context, req *market.MarketReq) (*market.SymbolThumbRes, error) 
 func (e *MarketServer) FindSymbolThumbTrend(ctx context.Context, req *market.MarketReq) (*market.SymbolThumbRes, error) {
 	l := logic.NewMarketLogic(ctx, e.svcCtx)
 	return l.FindSymbolThumbTrend(req)
