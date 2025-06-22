@@ -7,6 +7,7 @@ import (
 	"job-center/internal/database"
 	"job-center/internal/domain"
 	"log"
+	"strings"
 	"sync"
 	"time"
 )
@@ -32,6 +33,7 @@ type Kline struct {
 	wg          sync.WaitGroup      // 用于同步控制
 	c           OkxConfig           // OKX配置
 	klineDomain *domain.KlineDomain // K线处理模块
+	queueDomain *domain.QueueDomain // 队列处理模块
 	ch          cache.Cache         // 缓存接口
 }
 
@@ -85,27 +87,28 @@ func (k *Kline) getKlineData(instId string, symbol string, period string) {
 	if result.Code == "0" {
 		//代表成功
 		k.klineDomain.SaveBatch(result.Data, symbol, period)
-		//if "1m" == period {
-		//	//把这个最新的数据result.Data[0] 推送到market服务，推送到前端页面，实时进行变化
-		//	//->kafka->market kafka消费者进行数据消费-> 通过websocket通道发送给前端 ->前端更新数据
-		//	if len(result.Data) > 0 {
-		//		data := result.Data[0]
-		//		k.queueDomain.Send1mKline(data, symbol)
-		//		//放入redis 将其最新的价格
-		//		key := strings.ReplaceAll(instId, "-", "::")
-		//		k.ch.Set(key+"::RATE", data[4])
-		//	}
-		//}
+		if "1m" == period {
+			//把这个最新的数据result.Data[0] 推送到market服务，推送到前端页面，实时进行变化
+			//->kafka->market kafka消费者进行数据消费-> 通过websocket通道发送给前端 ->前端更新数据
+			if len(result.Data) > 0 {
+				data := result.Data[0]
+				k.queueDomain.Send1mKline(data, symbol)
+				//放入redis 将其最新的价格
+				key := strings.ReplaceAll(instId, "-", "::")
+				k.ch.Set(key+"::RATE", data[4])
+			}
+		}
 	}
 	k.wg.Done()
 	log.Println("==================End====================")
 }
 
 // NewKline 创建Kline实例
-func NewKline(c OkxConfig, mongoClient *database.MongoClient, cache2 cache.Cache) *Kline {
+func NewKline(c OkxConfig, mongoClient *database.MongoClient, kafkaCli *database.KafkaClient, cache2 cache.Cache) *Kline {
 	return &Kline{
 		c:           c,
 		klineDomain: domain.NewKlineDomain(mongoClient),
+		queueDomain: domain.NewQueueDomain(kafkaCli),
 		ch:          cache2,
 	}
 }

@@ -27,13 +27,13 @@ func NewTask(ctx *svc.ServiceContext) *Task {
 func (t *Task) Run() {
 	// 定义各种时间间隔的定时任务，例如每分钟、每小时、每天等
 	t.s.Every(1).Minute().Do(func() {
-		logic.NewKline(t.ctx.Config.Okx, t.ctx.MongoClient, t.ctx.Cache).Do("1m")
+		logic.NewKline(t.ctx.Config.Okx, t.ctx.MongoClient, t.ctx.KafkaClient, t.ctx.Cache).Do("1m")
 	})
 	t.s.Every(3).Minute().Do(func() {
-		logic.NewKline(t.ctx.Config.Okx, t.ctx.MongoClient, t.ctx.Cache).Do("3m")
+		logic.NewKline(t.ctx.Config.Okx, t.ctx.MongoClient, t.ctx.KafkaClient, t.ctx.Cache).Do("3m")
 	})
 	t.s.Every(5).Minute().Do(func() {
-		logic.NewKline(t.ctx.Config.Okx, t.ctx.MongoClient, t.ctx.Cache).Do("5m")
+		logic.NewKline(t.ctx.Config.Okx, t.ctx.MongoClient, t.ctx.KafkaClient, t.ctx.Cache).Do("5m")
 	})
 	//t.s.Every(15).Minute().Do(func() {
 	//	logic.NewKline(t.ctx.Config.Okx, t.ctx.Cache).Do("15m")
