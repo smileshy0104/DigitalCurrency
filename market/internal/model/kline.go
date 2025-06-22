@@ -5,6 +5,7 @@ import (
 	"grpc-common/market/types/market"
 )
 
+// kline 结构体
 type Kline struct {
 	Period       string  `bson:"period,omitempty"`
 	OpenPrice    float64 `bson:"openPrice,omitempty"`
@@ -17,10 +18,12 @@ type Kline struct {
 	Turnover     float64 `bson:"turnover,omitempty"` //成交额
 }
 
+// Table 交易行情表表名
 func (*Kline) Table(symbol, period string) string {
 	return "exchange_kline_" + symbol + "_" + period
 }
 
+// ToCoinThumb 转换为CoinThumb
 func (k *Kline) ToCoinThumb(symbol string, end *Kline) *market.CoinThumb {
 	ct := &market.CoinThumb{}
 	ct.Symbol = symbol
@@ -35,6 +38,7 @@ func (k *Kline) ToCoinThumb(symbol string, end *Kline) *market.CoinThumb {
 	return ct
 }
 
+// DefaultCoinThumb 默认值
 func DefaultCoinThumb(symbol string) *market.CoinThumb {
 	ct := &market.CoinThumb{}
 	ct.Symbol = symbol

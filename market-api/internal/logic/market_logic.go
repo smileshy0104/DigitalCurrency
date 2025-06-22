@@ -39,3 +39,18 @@ func (l *MarketLogic) SymbolThumbTrend(req *types.MarketReq) (list []*types.Coin
 	}
 	return
 }
+
+//func (l *MarketLogic) SymbolThumb(req *types.MarketReq) (list []*types.CoinThumbResp, err error) {
+//	var thumbs []*market.CoinThumb
+//	thumb := l.svcCtx.Processor.GetThumb()
+//	if thumb != nil {
+//		switch thumb.(type) {
+//		case []*market.CoinThumb:
+//			thumbs = thumb.([]*market.CoinThumb)
+//		}
+//	}
+//	if err := copier.Copy(&list, thumbs); err != nil {
+//		return nil, err
+//	}
+//	return
+//}

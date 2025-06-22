@@ -9,10 +9,10 @@ Mongo:
   Username: "root"
   Password: "root123456"
   DataBase: "mscoin"
-#Kafka:
-#  Addr: localhost:9092
-#  WriteCap: 100
-#  ReadCap: 100
+Kafka:
+  Addr: localhost:9092
+  WriteCap: 100
+  ReadCap: 100
 CacheRedis:
   - Host: 8.153.166.227:6379
     Type: node

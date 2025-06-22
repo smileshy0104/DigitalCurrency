@@ -10,16 +10,19 @@ import (
 	"market/internal/repo"
 )
 
+// ExchangeCoinDomain 交易货币模块
 type ExchangeCoinDomain struct {
 	exchangeCoinRepo repo.ExchangeCoinRepo
 }
 
+// NewExchangeCoinDomain 创建交易货币模块
 func NewExchangeCoinDomain(db *db.DB) *ExchangeCoinDomain {
 	return &ExchangeCoinDomain{
 		exchangeCoinRepo: dao.NewExchangeCoinDao(db),
 	}
 }
 
+// FindVisible 查询所有可见的交易货币
 func (d *ExchangeCoinDomain) FindVisible(ctx context.Context) []*model.ExchangeCoin {
 	list, err := d.exchangeCoinRepo.FindVisible(ctx)
 	if err != nil {
@@ -29,6 +32,7 @@ func (d *ExchangeCoinDomain) FindVisible(ctx context.Context) []*model.ExchangeC
 	return list
 }
 
+// FindBySymbol 根据交易对查询交易货币
 func (d *ExchangeCoinDomain) FindBySymbol(ctx context.Context, symbol string) (*model.ExchangeCoin, error) {
 	exchangeCoin, err := d.exchangeCoinRepo.FindBySymbol(ctx, symbol)
 	if err != nil {

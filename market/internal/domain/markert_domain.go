@@ -22,13 +22,16 @@ func NewMarketDomain(mongoClient *database.MongoClient) *MarketDomain {
 	}
 }
 
+// SymbolThumbTrend 获取币种thumb
 func (d *MarketDomain) SymbolThumbTrend(coins []*model.ExchangeCoin) []*market.CoinThumb {
 	//业务模型 == rpc传输模型
 	coinThumbs := make([]*market.CoinThumb, len(coins))
+	// 遍历币种coins
 	for i, v := range coins {
 		from := tools.ZeroTime()
 		end := time.Now().UnixMilli()
-		klines, err := d.klineRepo.FindBySymbolTime(context.Background(), v.Symbol, "1m", from, end, "")
+		// 查询1H间隔的 可以根据时间来进行查询 当天的价格变化趋势
+		klines, err := d.klineRepo.FindBySymbolTime(context.Background(), v.Symbol, "1h", from, end, "")
 		if err != nil {
 			coinThumbs[i] = model.DefaultCoinThumb(v.Symbol)
 			continue

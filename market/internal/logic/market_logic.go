@@ -29,11 +29,15 @@ func NewMarketLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MarketLogi
 		coinDomain:         domain.NewCoinDomain(svcCtx.Db),
 	}
 }
+
+// FindSymbolThumbTrend 获取24H价格变化趋势
 func (l *MarketLogic) FindSymbolThumbTrend(req *market.MarketReq) (*market.SymbolThumbRes, error) {
 	coins := l.exchangeCoinDomain.FindVisible(l.ctx)
 	//查询mongo中相应的数据
 	//查询1H间隔的 可以根据时间来进行查询 当天的价格变化趋势
 	coinThumbs := l.marketDomain.SymbolThumbTrend(coins)
+
+	// TODO 模拟数据
 	//coinThumbs := make([]*market.CoinThumb, len(coins))
 	//for i, v := range coins {
 	//	ct := &market.CoinThumb{}
