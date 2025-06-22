@@ -18,8 +18,11 @@ type ServiceContext struct {
 
 // NewServiceContext 创建服务上下文
 func NewServiceContext(c config.Config) *ServiceContext {
+	// 初始化 kafka
 	client := database.NewKafkaClient(c.Kafka)
+	// 启动 kafka 写入
 	client.StartWrite()
+	// redis 缓存
 	redisCache := cache.New(
 		c.CacheRedis,
 		nil,
