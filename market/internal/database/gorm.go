@@ -7,6 +7,12 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+// MysqlConfig 是 MySQL 数据库的配置结构体。
+// 它包含了连接数据库所需的数据源信息。
+type MysqlConfig struct {
+	DataSource string // 数据源地址，用于连接 MySQL 数据库
+}
+
 // ConnMysql 连接到MySQL数据库并配置连接池。
 func ConnMysql(dsn string) *db.DB {
 	// 尝试连接到MySQL数据库。

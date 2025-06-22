@@ -12,6 +12,8 @@ type ServiceContext struct {
 	MongoClient *database.MongoClient // mongo
 	KafkaClient *database.KafkaClient // kafka
 	Cache       cache.Cache           // 缓存
+	//AssetRpc       uc_client.Asset
+	//BitCoinAddress string
 }
 
 // NewServiceContext 创建服务上下文

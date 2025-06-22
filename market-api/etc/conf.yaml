@@ -16,3 +16,9 @@ MarketRpc:
       - 8.153.166.227:2379
     # 定义在Etcd中存储的键名，用于服务发现
     Key: market.rpc
+
+Kafka:
+  Addr: localhost:9092
+  WriteCap: 100
+  ReadCap: 100
+  ConsumerGroup: "kline1m-thumb-consumer"

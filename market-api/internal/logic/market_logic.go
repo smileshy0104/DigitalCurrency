@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/market/types/market"
@@ -25,32 +26,108 @@ func NewMarketLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MarketLogi
 }
 
 func (l *MarketLogic) SymbolThumbTrend(req *types.MarketReq) (list []*types.CoinThumbResp, err error) {
-	// 创建一个带有超时的上下文，以确保请求不会无限期地等待。
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel() // 确保在函数退出时取消创建的上下文。
-
-	// 调用ExchangeRateRpc服务的UsdRate方法获取汇率信息。
-	symbolThumbRes, err := l.svcCtx.MarketRpc.FindSymbolThumbTrend(ctx, &market.MarketReq{Ip: req.Ip})
-	if err != nil {
-		return nil, err // 如果发生错误，返回nil和错误信息。
+	var thumbs []*market.CoinThumb
+	thumb := l.svcCtx.Processor.GetThumb()
+	isCache := false
+	if thumb != nil {
+		switch thumb.(type) {
+		case []*market.CoinThumb:
+			thumbs = thumb.([]*market.CoinThumb)
+			isCache = true
+		}
 	}
-	if err := copier.Copy(&list, symbolThumbRes.List); err != nil {
+	if !isCache {
+		ctx, cancelFunc := context.WithTimeout(l.ctx, 10*time.Second)
+		defer cancelFunc()
+		symbolThumbRes, err := l.svcCtx.MarketRpc.FindSymbolThumbTrend(ctx,
+			&market.MarketReq{
+				Ip: req.Ip,
+			})
+		if err != nil {
+			return nil, err
+		}
+		thumbs = symbolThumbRes.List
+	}
+	if err := copier.Copy(&list, thumbs); err != nil {
 		return nil, err
 	}
 	return
 }
 
-//func (l *MarketLogic) SymbolThumb(req *types.MarketReq) (list []*types.CoinThumbResp, err error) {
-//	var thumbs []*market.CoinThumb
-//	thumb := l.svcCtx.Processor.GetThumb()
-//	if thumb != nil {
-//		switch thumb.(type) {
-//		case []*market.CoinThumb:
-//			thumbs = thumb.([]*market.CoinThumb)
-//		}
-//	}
-//	if err := copier.Copy(&list, thumbs); err != nil {
-//		return nil, err
-//	}
-//	return
-//}
+func (l *MarketLogic) SymbolThumb(req *types.MarketReq) (list []*types.CoinThumbResp, err error) {
+	var thumbs []*market.CoinThumb
+	thumb := l.svcCtx.Processor.GetThumb()
+	if thumb != nil {
+		switch thumb.(type) {
+		case []*market.CoinThumb:
+			thumbs = thumb.([]*market.CoinThumb)
+		}
+	}
+	if err := copier.Copy(&list, thumbs); err != nil {
+		return nil, err
+	}
+	return
+}
+
+func (l *MarketLogic) SymbolInfo(req types.MarketReq) (resp *types.ExchangeCoinResp, err error) {
+	ctx, cancelFunc := context.WithTimeout(l.ctx, 10*time.Second)
+	defer cancelFunc()
+	esRes, err := l.svcCtx.MarketRpc.FindSymbolInfo(ctx,
+		&market.MarketReq{
+			Ip:     req.Ip,
+			Symbol: req.Symbol,
+		})
+	if err != nil {
+		return nil, err
+	}
+	resp = &types.ExchangeCoinResp{}
+	if err := copier.Copy(resp, esRes); err != nil {
+		return nil, err
+	}
+	return
+}
+
+func (l *MarketLogic) CoinInfo(req *types.MarketReq) (*types.Coin, error) {
+	ctx, cancel := context.WithTimeout(l.ctx, 5*time.Second)
+	defer cancel()
+	coin, err := l.svcCtx.MarketRpc.FindCoinInfo(ctx, &market.MarketReq{
+		Unit: req.Unit,
+	})
+	if err != nil {
+		return nil, err
+	}
+	ec := &types.Coin{}
+	if err := copier.Copy(&ec, coin); err != nil {
+		return nil, errors.New("数据格式有误")
+	}
+	return ec, nil
+}
+
+func (l *MarketLogic) History(req *types.MarketReq) (*types.HistoryKline, error) {
+	ctx, cancel := context.WithTimeout(l.ctx, 10*time.Second)
+	defer cancel()
+	historyKline, err := l.svcCtx.MarketRpc.HistoryKline(ctx, &market.MarketReq{
+		Symbol:     req.Symbol,
+		From:       req.From,
+		To:         req.To,
+		Resolution: req.Resolution,
+	})
+	if err != nil {
+		return nil, err
+	}
+	histories := historyKline.List
+	var list = make([][]any, len(histories))
+	for i, v := range histories {
+		content := make([]any, 6)
+		content[0] = v.Time
+		content[1] = v.Open
+		content[2] = v.High
+		content[3] = v.Low
+		content[4] = v.Close
+		content[5] = v.Volume
+		list[i] = content
+	}
+	return &types.HistoryKline{
+		List: list,
+	}, nil
+}
