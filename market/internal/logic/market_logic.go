@@ -7,6 +7,7 @@ import (
 	"grpc-common/market/types/market"
 	"market/internal/domain"
 	"market/internal/svc"
+	"time"
 )
 
 type MarketLogic struct {
@@ -57,4 +58,70 @@ func (l *MarketLogic) FindSymbolInfo(req *market.MarketReq) (*market.ExchangeCoi
 	ec := &market.ExchangeCoin{}
 	copier.Copy(ec, exchangeCoin)
 	return ec, nil
+}
+
+func (l *MarketLogic) HistoryKline(req *market.MarketReq) (*market.HistoryRes, error) {
+	//去mongo 表查询数据 按照时间范围进行查询 同时要排序 按照时间升序
+	ctx, cancel := context.WithTimeout(l.ctx, 10*time.Second)
+	defer cancel()
+	period := "1H"
+	if req.Resolution == "60" {
+		period = "1H"
+	} else if req.Resolution == "30" {
+		period = "30m"
+	} else if req.Resolution == "15" {
+		period = "15m"
+	} else if req.Resolution == "5" {
+		period = "5m"
+	} else if req.Resolution == "1" {
+		period = "1m"
+	} else if req.Resolution == "1D" {
+		period = "1D"
+	} else if req.Resolution == "1W" {
+		period = "1W"
+	} else if req.Resolution == "1M" {
+		period = "1M"
+	}
+	histories, err := l.marketDomain.HistoryKline(ctx, req.Symbol, req.From, req.To, period)
+	if err != nil {
+		return nil, err
+	}
+	return &market.HistoryRes{
+		List: histories,
+	}, nil
+}
+
+func (l *MarketLogic) FindExchangeCoinVisible(req *market.MarketReq) (*market.ExchangeCoinRes, error) {
+	exchangeCoins := l.exchangeCoinDomain.FindVisible(l.ctx)
+	var list []*market.ExchangeCoin
+	copier.Copy(&list, exchangeCoins)
+	return &market.ExchangeCoinRes{
+		List: list,
+	}, nil
+}
+
+func (l *MarketLogic) FindAllCoin(req *market.MarketReq) (*market.CoinList, error) {
+	coinList, err := l.coinDomain.FindAll(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+	var list []*market.Coin
+	copier.Copy(&list, coinList)
+	return &market.CoinList{
+		List: list,
+	}, nil
+}
+
+func (l *MarketLogic) FindById(req *market.MarketReq) (*market.Coin, error) {
+	ctx, cancel := context.WithTimeout(l.ctx, 5*time.Second)
+	defer cancel()
+	coin, err := l.coinDomain.FindCoinId(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	mc := &market.Coin{}
+	if err := copier.Copy(mc, coin); err != nil {
+		return nil, err
+	}
+	return mc, nil
 }
