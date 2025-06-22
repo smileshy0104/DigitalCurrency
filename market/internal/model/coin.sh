@@ -1,0 +1,1 @@
+goctl model mysql datasource --url="root:123456@tcp(8.153.166.227:3309)/mscoin" --table="coin" -c --dir .

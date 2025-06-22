@@ -60,6 +60,20 @@ func (l *MarketLogic) FindSymbolInfo(req *market.MarketReq) (*market.ExchangeCoi
 	return ec, nil
 }
 
+func (l *MarketLogic) FindCoinInfo(req *market.MarketReq) (*market.Coin, error) {
+	ctx, cancel := context.WithTimeout(l.ctx, 5*time.Second)
+	defer cancel()
+	coin, err := l.coinDomain.FindCoinInfo(ctx, req.Unit)
+	if err != nil {
+		return nil, err
+	}
+	mc := &market.Coin{}
+	if err := copier.Copy(mc, coin); err != nil {
+		return nil, err
+	}
+	return mc, nil
+}
+
 func (l *MarketLogic) HistoryKline(req *market.MarketReq) (*market.HistoryRes, error) {
 	//去mongo 表查询数据 按照时间范围进行查询 同时要排序 按照时间升序
 	ctx, cancel := context.WithTimeout(l.ctx, 10*time.Second)
