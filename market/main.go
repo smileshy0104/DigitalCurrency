@@ -9,6 +9,7 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"grpc-common/market/types/market"
 	"grpc-common/market/types/rate"
 	"market/internal/config"
 	"market/internal/server"
@@ -27,7 +28,7 @@ func main() {
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		rate.RegisterExchangeRateServer(grpcServer, server.NewExchangeRateServer(ctx))
-		//market.RegisterMarketServer(grpcServer, server.NewMarketServer(ctx))
+		market.RegisterMarketServer(grpcServer, server.NewMarketServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

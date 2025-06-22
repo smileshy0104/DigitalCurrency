@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// DivN 浮点数运算
 func DivN(x float64, y float64, n int) float64 {
 	s := fmt.Sprintf("%d", n)
 	parseFloat, err := strconv.ParseFloat(fmt.Sprintf("%."+s+"f", x/y), 64)
@@ -18,6 +19,7 @@ func DivN(x float64, y float64, n int) float64 {
 	return parseFloat
 }
 
+// MulN 浮点数运算
 func MulN(x float64, y float64, n int) float64 {
 	s := fmt.Sprintf("%d", n)
 	parseFloat, err := strconv.ParseFloat(fmt.Sprintf("%."+s+"f", x*y), 64)

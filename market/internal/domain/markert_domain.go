@@ -28,7 +28,7 @@ func (d *MarketDomain) SymbolThumbTrend(coins []*model.ExchangeCoin) []*market.C
 	for i, v := range coins {
 		from := tools.ZeroTime()
 		end := time.Now().UnixMilli()
-		klines, err := d.klineRepo.FindBySymbolTime(context.Background(), v.Symbol, "1H", from, end, "")
+		klines, err := d.klineRepo.FindBySymbolTime(context.Background(), v.Symbol, "1m", from, end, "")
 		if err != nil {
 			coinThumbs[i] = model.DefaultCoinThumb(v.Symbol)
 			continue
