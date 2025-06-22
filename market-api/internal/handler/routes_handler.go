@@ -19,4 +19,9 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	rateGroup := r.Group()
 	// 在路由组中注册处理函数，处理获取美元汇率的请求。
 	rateGroup.Post("/exchange-rate/usd/:unit", rate.UsdRate)
+
+	market := NewMarketHandler(serverCtx)
+	marketGroup := r.Group()
+	marketGroup.Post("/symbol-thumb-trend", market.SymbolThumbTrend)
+	//marketGroup.Post("/symbol-thumb", market.SymbolThumb)
 }

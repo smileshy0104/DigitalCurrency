@@ -13,6 +13,7 @@ type ServiceContext struct {
 	Config config.Config
 	// ExchangeRateRpc 是一个 RPC 客户端，用于调用汇率服务。
 	ExchangeRateRpc mk_client.ExchangeRate
+	MarketRpc       mk_client.Market
 }
 
 // NewServiceContext 创建并返回一个新的 ServiceContext 实例。
@@ -25,5 +26,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:          c,
 		ExchangeRateRpc: mk_client.NewExchangeRate(zrpc.MustNewClient(c.MarketRpc)),
+		MarketRpc:       mk_client.NewMarket(zrpc.MustNewClient(c.MarketRpc)),
 	}
 }
