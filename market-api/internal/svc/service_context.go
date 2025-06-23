@@ -17,7 +17,7 @@ type ServiceContext struct {
 	// ExchangeRateRpc 是一个 RPC 客户端，用于调用汇率服务。
 	ExchangeRateRpc mk_client.ExchangeRate
 	MarketRpc       mk_client.Market
-	Processor       processor.Processor
+	Processor       processor.Processor // 处理器
 }
 
 // NewServiceContext 创建并返回一个新的 ServiceContext 实例。
@@ -25,9 +25,11 @@ type ServiceContext struct {
 // 这个函数负责初始化 ServiceContext 结构体，并创建用户注册的RPC客户端。
 // 返回值是初始化后的 *ServiceContext 实例，即服务上下文的指针。
 func NewServiceContext(c config.Config, server *ws.WebsocketServer) *ServiceContext {
-	//初始化processor
+	// 初始化 kafka
 	kafaCli := database.NewKafkaClient(c.Kafka)
+	// 初始化市场模块的 RPC 客户端
 	market := mk_client.NewMarket(zrpc.MustNewClient(c.MarketRpc))
+	// 创建一个新的DefaultProcessor实例
 	defaultProcessor := processor.NewDefaultProcessor(kafaCli)
 	defaultProcessor.Init(market)
 	defaultProcessor.AddHandler(processor.NewWebsocketHandler(server))

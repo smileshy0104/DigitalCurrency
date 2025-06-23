@@ -17,8 +17,13 @@ MarketRpc:
     # 定义在Etcd中存储的键名，用于服务发现
     Key: market.rpc
 
+# 配置Kafka相关参数
 Kafka:
+  # Kafka服务器的地址
   Addr: localhost:9092
+  # 写入Kafka的消息容量限制
   WriteCap: 100
+  # 从Kafka读取消息的容量限制
   ReadCap: 100
+  # Kafka消费者的消费者组名称
   ConsumerGroup: "kline1m-thumb-consumer"

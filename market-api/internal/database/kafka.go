@@ -202,7 +202,7 @@ func (k *KafkaClient) StartReadNew(topic string) *KafkaClient {
 // 该方法没有输入参数和返回值
 func (k *KafkaClient) readMsg() {
 	for {
-		// 尝试从 Kafka 主题读取消息
+		// TODO 尝试从 Kafka 主题读取消息
 		m, err := k.r.ReadMessage(context.Background())
 		// 如果发生错误，记录错误信息并继续下一次循环
 		if err != nil {
