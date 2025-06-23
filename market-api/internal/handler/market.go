@@ -22,17 +22,20 @@ func NewMarketHandler(svcCtx *svc.ServiceContext) *MarketHandler {
 	}
 }
 
+// SymbolThumbTrend 获取币种行情趋势
 func (h *MarketHandler) SymbolThumbTrend(w http.ResponseWriter, r *http.Request) {
 	var req = &types.MarketReq{}
 	newResult := common.NewResult()
 	//获取一下ip
 	req.Ip = tools.GetRemoteClientIp(r)
+	// 初始化市场模块逻辑层
 	l := logic.NewMarketLogic(r.Context(), h.svcCtx)
 	resp, err := l.SymbolThumbTrend(req)
 	result := newResult.Deal(resp, err)
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 
+// SymbolThumb 获取币种行情
 func (h *MarketHandler) SymbolThumb(w http.ResponseWriter, r *http.Request) {
 	var req = &types.MarketReq{}
 	newResult := common.NewResult()
@@ -44,6 +47,7 @@ func (h *MarketHandler) SymbolThumb(w http.ResponseWriter, r *http.Request) {
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 
+// SymbolInfo 获取币种信息
 func (h *MarketHandler) SymbolInfo(w http.ResponseWriter, r *http.Request) {
 	var req types.MarketReq
 	if err := httpx.ParseForm(r, &req); err != nil {
@@ -58,6 +62,7 @@ func (h *MarketHandler) SymbolInfo(w http.ResponseWriter, r *http.Request) {
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 
+// CoinInfo 货币信息
 func (h *MarketHandler) CoinInfo(w http.ResponseWriter, r *http.Request) {
 	var req types.MarketReq
 	if err := httpx.ParseForm(r, &req); err != nil {
@@ -72,6 +77,7 @@ func (h *MarketHandler) CoinInfo(w http.ResponseWriter, r *http.Request) {
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 
+// History
 func (h *MarketHandler) History(w http.ResponseWriter, r *http.Request) {
 	var req types.MarketReq
 	if err := httpx.ParseForm(r, &req); err != nil {

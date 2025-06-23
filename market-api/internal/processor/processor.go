@@ -10,36 +10,42 @@ import (
 	"market-api/internal/model"
 )
 
+// kafka中key名称
 const KLINE1M = "kline_1m"
 const KLINE = "kline"
 const TRADE = "trade"
 const TradePlateTopic = "exchange_order_trade_plate"
 const TradePlate = "tradePlate"
 
+// MarketHandler定义了处理市场数据的接口
 type MarketHandler interface {
 	HandleTrade(symbol string, data []byte)
 	HandleKLine(symbol string, kline *model.Kline, thumbMap map[string]*market.CoinThumb)
 	HandleTradePlate(symbol string, tp *model.TradePlateResult)
 }
 
+// ProcessData表示从kafka中读取的数据结构
 type ProcessData struct {
 	Type string //trade 交易 kline k线
 	Key  []byte
 	Data []byte
 }
 
+// Processor定义了处理市场数据的处理器接口
 type Processor interface {
 	GetThumb() any
 	Process(data ProcessData)
 	AddHandler(h MarketHandler)
 }
 
+// DefaultProcessor是Processor接口的默认实现
 type DefaultProcessor struct {
 	kafkaCli *database.KafkaClient
 	handlers []MarketHandler
 	thumbMap map[string]*market.CoinThumb
 }
 
+// NewDefaultProcessor创建一个新的DefaultProcessor实例
 func NewDefaultProcessor(kafkaCli *database.KafkaClient) *DefaultProcessor {
 	return &DefaultProcessor{
 		kafkaCli: kafkaCli,
@@ -48,6 +54,7 @@ func NewDefaultProcessor(kafkaCli *database.KafkaClient) *DefaultProcessor {
 	}
 }
 
+// Process处理从kafka中读取的数据
 func (d *DefaultProcessor) Process(data ProcessData) {
 	if data.Type == KLINE {
 		symbol := string(data.Key)
@@ -66,16 +73,20 @@ func (d *DefaultProcessor) Process(data ProcessData) {
 	}
 }
 
+// AddHandler添加一个MarketHandler处理市场数据
 func (d *DefaultProcessor) AddHandler(h MarketHandler) {
 	//发送到websocket的服务
 	d.handlers = append(d.handlers, h)
 }
 
+// Init初始化DefaultProcessor
 func (p *DefaultProcessor) Init(marketRpc mk_client.Market) {
 	p.startReadFromKafka(KLINE1M, KLINE)
 	p.startReadTradePlate(TradePlateTopic)
 	p.initThumbMap(marketRpc)
 }
+
+// GetThumb获取所有币种的缩略图信息
 func (d *DefaultProcessor) GetThumb() any {
 	cs := make([]*market.CoinThumb, len(d.thumbMap))
 	i := 0
@@ -86,12 +97,14 @@ func (d *DefaultProcessor) GetThumb() any {
 	return cs
 }
 
+// startReadFromKafka开始从kafka中读取数据
 func (p *DefaultProcessor) startReadFromKafka(topic string, tp string) {
 	//一定要先start 后read
 	p.kafkaCli.StartRead(topic)
 	go p.dealQueueData(p.kafkaCli, tp)
 }
 
+// dealQueueData处理从kafka中读取的数据
 func (p *DefaultProcessor) dealQueueData(cli *database.KafkaClient, tp string) {
 	//这就是队列的数据
 	for {
@@ -103,9 +116,9 @@ func (p *DefaultProcessor) dealQueueData(cli *database.KafkaClient, tp string) {
 		}
 		p.Process(data)
 	}
-
 }
 
+// initThumbMap初始化币种缩略图信息
 func (d *DefaultProcessor) initThumbMap(marketRpc mk_client.Market) {
 	symbolThumbRes, err := marketRpc.FindSymbolThumbTrend(context.Background(),
 		&market.MarketReq{})
@@ -119,6 +132,7 @@ func (d *DefaultProcessor) initThumbMap(marketRpc mk_client.Market) {
 	}
 }
 
+// startReadTradePlate开始读取交易盘数据
 func (p *DefaultProcessor) startReadTradePlate(topic string) {
 	cli := p.kafkaCli.StartReadNew(topic)
 	go p.dealQueueData(cli, TradePlate)

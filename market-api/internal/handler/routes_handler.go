@@ -22,10 +22,10 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 
 	market := NewMarketHandler(serverCtx)
 	marketGroup := r.Group()
-	marketGroup.Post("/symbol-thumb-trend", market.SymbolThumbTrend)
+	marketGroup.Post("/symbol-thumb-trend", market.SymbolThumbTrend) // 获取币种行情趋势
 	marketGroup.Post("/symbol-thumb", market.SymbolThumb)
-	marketGroup.Post("/symbol-info", market.SymbolInfo)
-	marketGroup.Post("/coin-info", market.CoinInfo)
+	marketGroup.Post("/symbol-info", market.SymbolInfo) // 获取币种信息
+	marketGroup.Post("/coin-info", market.CoinInfo)     // 获取货币信息
 	marketGroup.Get("/history", market.History)
 
 	wsGroup := r.Group()
