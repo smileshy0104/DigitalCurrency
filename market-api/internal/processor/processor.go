@@ -69,7 +69,7 @@ func (d *DefaultProcessor) Process(data ProcessData) {
 		symbol := string(data.Key)
 		// 初始化K线数据对象
 		kline := &model.Kline{}
-		// 解析数据到K线数据对象
+		// 解析数据到K线数据对象————kline
 		json.Unmarshal(data.Data, kline)
 		// 遍历所有处理器并调用它们的HandleKLine方法处理K线数据
 		for _, v := range d.handlers {
@@ -101,7 +101,7 @@ func (p *DefaultProcessor) Init(marketRpc mk_client.Market) {
 	p.startReadFromKafka(KLINE1M, KLINE)
 	// 启动从Kafka中读取盘口数据的goroutine
 	p.startReadTradePlate(TradePlateTopic)
-	// 初始化缩略图信息
+	// 初始化缩略图信息————初始化d.thumbMap信息
 	p.initThumbMap(marketRpc)
 }
 
@@ -134,7 +134,7 @@ func (p *DefaultProcessor) startReadFromKafka(topic string, tp string) {
 func (p *DefaultProcessor) dealQueueData(cli *database.KafkaClient, tp string) {
 	//这就是队列的数据
 	for {
-		// Read 从读通道读取消息
+		// Read 从读通道k.readChan读取消息
 		msg := cli.Read()
 		// 创建一个ProcessData对象
 		data := ProcessData{

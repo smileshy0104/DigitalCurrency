@@ -159,8 +159,8 @@ func (k *KafkaClient) StartRead(topic string) {
 	// 创建一个 Kafka 读取器，配置关键参数。
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:  []string{k.c.Addr}, // 指定 Kafka 代理地址。
-		Topic:    topic,              // 指定要读取的 Kafka 主题。
-		GroupID:  k.c.ConsumerGroup,  // 指定消费者组ID。
+		Topic:    topic,              // 指定要读取的 Kafka 主题。  kline_1m
+		GroupID:  k.c.ConsumerGroup,  // 指定消费者组ID。 kline1m-thumb-consumer
 		MinBytes: 10e3,               // 设置单次读取数据的最小字节数为10KB。
 		MaxBytes: 10e6,               // 设置单次读取数据的最大字节数为10MB。
 	})
@@ -168,7 +168,7 @@ func (k *KafkaClient) StartRead(topic string) {
 	k.r = r
 	// 创建一个具有指定容量的通道，用于存储读取到的 Kafka 数据。
 	k.readChan = make(chan KafkaData, k.c.ReadCap)
-	// 启动一个协程，用于执行实际的消息读取操作。
+	// 启动一个协程，用于执行实际的消息读取操作————存入管道。
 	go k.readMsg()
 }
 
@@ -191,13 +191,14 @@ func (k *KafkaClient) StartReadNew(topic string) *KafkaClient {
 	client.r = r
 	// 创建一个通道，用于接收读取到的Kafka数据。
 	client.readChan = make(chan KafkaData, k.c.ReadCap)
-	// 启动一个协程，开始读取消息。
+	// 启动一个协程，开始读取消息————存入管道。
 	go client.readMsg()
 
 	// 返回初始化完毕，准备读取消息的KafkaClient实例。
 	return client
 }
 
+// TODO 将读取到的信息存入管道中
 // readMsg 是 KafkaClient 的一个方法，用于持续从 Kafka 中读取消息
 // 该方法没有输入参数和返回值
 func (k *KafkaClient) readMsg() {
@@ -211,15 +212,15 @@ func (k *KafkaClient) readMsg() {
 		}
 		// 将读取到的消息封装为 KafkaData 结构
 		data := KafkaData{
-			Key:  m.Key,
-			Data: m.Value,
+			Key:  m.Key,   // 获取消息的键
+			Data: m.Value, // 获取消息的值
 		}
 		// 将封装好的消息发送到 readChan 通道，供其他协程处理
 		k.readChan <- data
 	}
 }
 
-// Read 从读通道读取消息
+// Read 从读通道k.readChan读取消息
 // 返回读通道中的消息数据
 func (k *KafkaClient) Read() KafkaData {
 	// 从 readChan 读取消息
