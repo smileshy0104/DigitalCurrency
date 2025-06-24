@@ -41,20 +41,24 @@ func (l *MarketLogic) SymbolThumbTrend(req *types.MarketReq) (list []*types.Coin
 	// 定义一个 CoinThumb 类型的切片来存储缩略信息。
 	var thumbs []*market.CoinThumb
 
-	// 尝试从缓存中获取缩略信息。
+	// TODO 尝试从缓存中获取缩略信息。
 	thumb := l.svcCtx.Processor.GetThumb()
+	// 初始缓存标识为false
 	isCache := false
 
 	// 检查缓存的数据是否为 CoinThumb 类型的切片。
 	if thumb != nil {
+		// 尝试将缓存数据转换为 CoinThumb 类型的切片。
 		switch thumb.(type) {
 		case []*market.CoinThumb:
+			// 将缓存数据转换为 CoinThumb 类型的切片。
 			thumbs = thumb.([]*market.CoinThumb)
+			// 设置缓存标识为true
 			isCache = true
 		}
 	}
 
-	// 如果缓存中没有数据，调用远程服务获取数据。
+	// TODO 如果缓存中没有数据，调用远程服务获取数据。
 	if !isCache {
 		// 设置一个带有超时的上下文。
 		ctx, cancelFunc := context.WithTimeout(l.ctx, 10*time.Second)

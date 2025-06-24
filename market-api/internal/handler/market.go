@@ -30,6 +30,7 @@ func (h *MarketHandler) SymbolThumbTrend(w http.ResponseWriter, r *http.Request)
 	req.Ip = tools.GetRemoteClientIp(r)
 	// 初始化市场模块逻辑层
 	l := logic.NewMarketLogic(r.Context(), h.svcCtx)
+	// 调用货币趋势模块逻辑层
 	resp, err := l.SymbolThumbTrend(req)
 	result := newResult.Deal(resp, err)
 	httpx.OkJsonCtx(r.Context(), w, result)

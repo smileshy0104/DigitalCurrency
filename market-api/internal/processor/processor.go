@@ -107,8 +107,10 @@ func (p *DefaultProcessor) Init(marketRpc mk_client.Market) {
 
 // GetThumb获取所有币种的缩略图信息
 func (d *DefaultProcessor) GetThumb() any {
+	// 创建一个切片，用于存储缩略图信息
 	cs := make([]*market.CoinThumb, len(d.thumbMap))
 	i := 0
+	// 遍历缩略图信息，将信息复制到切片中
 	for _, v := range d.thumbMap {
 		cs[i] = v
 		i++
