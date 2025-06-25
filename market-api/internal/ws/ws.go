@@ -92,7 +92,7 @@ func (ws *WebsocketServer) ServerHandler(next http.Handler) http.Handler {
 		// 获取请求的路径，用于后续的判断。
 		path := r.URL.Path
 		// 记录日志，用于调试和监控。
-		logx.Info("==========================", path)
+		logx.Info("============Web Socket==============", path)
 		// 检查路径是否以特定前缀开头，如果是，则进行WebSocket处理。
 		if strings.HasPrefix(path, ws.path) {
 			// 进行我们的处理

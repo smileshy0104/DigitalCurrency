@@ -56,10 +56,14 @@ func (w *WebsocketHandler) HandleKLine(symbol string, kline *model.Kline, thumbM
 	// 广播货币概览数据到所有订阅者。
 	w.wsServer.BroadcastToNamespace("/", "/topic/market/thumb", string(marshal))
 
+	logx.Info("/topic/market/thumb:", string(marshal))
+
 	// 将K线数据序列化为JSON格式。
 	bytes, _ := json.Marshal(kline)
 	// 广播K线数据到所有订阅者。
 	w.wsServer.BroadcastToNamespace("/", "/topic/market/kline/"+symbol, string(bytes))
+
+	logx.Info("/topic/market/kline/:", string(bytes))
 
 	// 结束处理K线数据时的日志记录。
 	logx.Info("================WebsocketHandler End=======================")
