@@ -1,6 +1,7 @@
 package processor
 
 import (
+	"common/tools"
 	"encoding/json"
 	"fmt"
 	"github.com/jinzhu/copier"
@@ -35,6 +36,7 @@ func (w *WebsocketHandler) HandleTrade(symbol string, data []byte) {
 func (w *WebsocketHandler) HandleKLine(symbol string, kline *model.Kline, thumbMap map[string]*market.CoinThumb) {
 	// 开始处理K线数据时的日志记录。
 	logx.Info("================WebsocketHandler Start=======================")
+	logx.Info("================成功调用Kafka中的数据：：", tools.ToTimeString(kline.Time))
 	logx.Info("symbol:", symbol)
 
 	// 从映射表中获取指定符号的货币概览。

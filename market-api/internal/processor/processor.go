@@ -91,7 +91,7 @@ func (d *DefaultProcessor) Process(data ProcessData) {
 
 // AddHandler添加一个MarketHandler处理市场数据
 func (d *DefaultProcessor) AddHandler(h MarketHandler) {
-	//发送到websocket的服务
+	//发送到websocket的服务，后面统一处理
 	d.handlers = append(d.handlers, h)
 }
 
