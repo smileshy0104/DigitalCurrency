@@ -41,7 +41,7 @@ func (l *MarketLogic) SymbolThumbTrend(req *types.MarketReq) (list []*types.Coin
 	// 定义一个 CoinThumb 类型的切片来存储缩略信息。
 	var thumbs []*market.CoinThumb
 
-	// TODO 尝试从缓存中获取缩略信息。
+	// TODO 尝试从缓存中获取缩略信息。（还是读取mongodb中的数据，但是这个数据在程序初始化时就调用了FindSymbolThumbTrend方法）
 	thumb := l.svcCtx.Processor.GetThumb()
 	// 初始缓存标识为false
 	isCache := false
