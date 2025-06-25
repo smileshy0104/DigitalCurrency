@@ -32,6 +32,7 @@ func NewServiceContext(c config.Config, server *ws.WebsocketServer) *ServiceCont
 	// 创建一个新的DefaultProcessor实例
 	defaultProcessor := processor.NewDefaultProcessor(kafaCli)
 	defaultProcessor.Init(market)
+	// 添加web socket到handler中
 	defaultProcessor.AddHandler(processor.NewWebsocketHandler(server))
 	// 创建并返回一个新的 ServiceContext 实例，其中 Config 字段设置为传入的配置信息 c，
 	// 并根据配置信息中的用户中心RPC地址，创建用户注册的RPC客户端。
