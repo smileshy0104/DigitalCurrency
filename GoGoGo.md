@@ -540,3 +540,85 @@ func main() {
     writer.Flush()
 }
 ```
+## 十三、HTTP能不能一次连接多次请求，不等后端返回
+### 1. HTTP/1.1的持久连接
+在HTTP/1.1中，默认启用了持久连接（Keep-Alive），允许在同一TCP连接上发送多个请求，而无需为每个请求重新建立连接。这意味着客户端可以在一个连接上连续发送多个请求，但通常仍然需要等待服务器响应。
+### 2. HTTP/2的多路复用
+HTTP/2引入了多路复用技术，允许在同一连接上并行发送多个请求和响应，而不需要等待前一个请求完成。这种方式显著提高了性能，减少了延迟。
+### 3. HTTP/2多路复用实现
+```go
+package main
+
+import (
+    "fmt"
+    "net/http"
+    "golang.org/x/net/http2"
+)
+
+func main() {
+    server := &http.Server{
+        Addr: ":8080",
+    }
+    
+    http2.ConfigureServer(server, nil) // 配置HTTP/2支持
+
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintf(w, "Hello, HTTP/2!")
+    })
+
+    server.ListenAndServeTLS("server.crt", "server.key") // 启动HTTPS服务器
+}
+```
+## 十四、TCP与UDP的区别，UDP优点，适用场景
+### 1. 概念
+TCP和UDP是两种不同的网络传输协议，它们之间的主要区别是：
+* 特性	TCP	UDP
+* 连接性	面向连接	无连接
+* 可靠性	提供可靠的数据传输，保证顺序	不保证数据的可靠性和顺序
+* 速度	较慢，因需建立连接和确认	较快，因无连接建立和确认
+* 流量控制	有流量控制机制	无流量控制
+* 适用场景	适用于需要可靠传输的应用	适用于实时性要求高的应用
+## 十五、死锁条件及其避免
+### 1. 概念
+死锁是指两个或多个进程在执行过程中，因为**争夺资源而造成的一种互相等待的状态**，导致所有进程都无法继续执行。
+### 2. 四个必要条件
+* 互斥条件：至少有一个资源是非共享的，即某一时刻只能被一个进程使用。
+* 保持并等待条件：一个进程持有至少一个资源，并等待获取其他资源。
+* 不剥夺条件：已经分配给进程的资源在未使用完之前不能被剥夺。
+* 循环等待条件：存在一个进程资源的循环等待链。
+### 3. 避免死锁
+* 资源分配图：使用资源分配图检测可能的死锁情况。
+* 避免循环等待：为资源分配设定一个顺序，确保进程按照顺序请求资源。
+* 资源预分配：进程在开始时请求所有所需资源，避免在运行过程中请求资源。
+* 使用时间限制：如果进程在一定时间内未能获取资源，则放弃并重试。
+### 4. 实例
+```go
+package main
+
+import (
+    "fmt"
+    "sync"
+)
+
+// 可以通过锁的顺序来避免死锁：
+var (
+    mutexA sync.Mutex
+    mutexB sync.Mutex
+)
+
+func processA() {
+    mutexA.Lock()
+    defer mutexA.Unlock()
+    mutexB.Lock()
+    defer mutexB.Unlock()
+    fmt.Println("Process A completed")
+}
+
+func processB() {
+    mutexA.Lock()
+    defer mutexA.Unlock()
+    mutexB.Lock()
+    defer mutexB.Unlock()
+    fmt.Println("Process B completed")
+}
+```
