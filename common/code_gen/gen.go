@@ -96,7 +96,7 @@ func GenStruct(table string, structName string) {
 		v.Field = name
 		v.Type = getType(v.Type)
 		v.Json = "`json:\"" + tfName + "\"`"
-		v.JsonForm = "`json:\"" + tfName + "\" from:\"" + tfName + "\"`"
+		v.JsonForm = "`json:\"" + tfName + "\" form:\"" + tfName + "\"`"
 		v.Gorm = "`gorm:\"column:" + field + "\"`"
 	}
 
