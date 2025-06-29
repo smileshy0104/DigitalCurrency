@@ -136,33 +136,68 @@ func GenStruct(table string, structName string) {
 	tmpl1.Execute(file1, sr)
 }
 
+// GenProtoMessage 生成protobuf消息定义。
+// 该函数根据数据库表结构生成protobuf消息定义文件(.proto)。
+// 参数:
+//
+//	table - 数据库表名，用于获取表结构信息。
+//	messageName - 生成的protobuf消息名称。
 func GenProtoMessage(table string, messageName string) {
+	// 连接MySQL数据库。
 	db := connectMysql()
+
+	// 存储查询结果的切片。
 	var results []*Result
+
+	// 执行SQL查询，获取表结构信息。
 	db.Raw(fmt.Sprintf("describe %s", table)).Scan(&results)
+
+	// 遍历查询结果，处理每个字段。
 	for _, v := range results {
+		// 将字段名转换为protobuf字段名。
 		v.MessageField = TFName(v.Field)
+		// 获取字段的数据类型。
 		v.Type = getMessageType(v.Type)
 	}
+
+	// 创建一个模板函数映射。
 	var fm template.FuncMap = make(map[string]any)
+	// 添加一个名为"Add"的函数，用于在模板中进行数值加法。
 	fm["Add"] = func(v int, add int) int {
 		return v + add
 	}
+
+	// 创建一个新的模板实例。
 	t := template.New("message.tpl")
+	// 注册模板函数。
 	t.Funcs(fm)
+
+	// 解析模板文件。
 	tmpl, err := t.ParseFiles("./message.tpl")
+	// 记录解析过程中的错误。
 	log.Println(err)
+
+	// 创建一个MessageResult实例，用于存储消息结果。
 	sr := MessageResult{MessageName: messageName, Result: results}
+
+	// 检查./gen目录是否存在。
 	_, err = os.Stat("./gen")
 	if err != nil {
+		// 如果目录不存在，则创建它。
 		if os.IsNotExist(err) {
 			os.Mkdir("./gen", 0666)
 		}
 	}
+
+	// 创建或打开一个文件，用于写入生成的protobuf消息定义。
 	file, err := os.Create("./gen/" + strings.ToLower(messageName) + ".proto")
 	defer file.Close()
+	// 记录文件创建过程中的错误。
 	log.Println(err)
+
+	// 使用模板生成protobuf消息定义，并写入文件。
 	err = tmpl.Execute(file, sr)
+	// 记录模板执行过程中的错误。
 	log.Println(err)
 }
 
