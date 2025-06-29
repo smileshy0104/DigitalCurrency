@@ -49,7 +49,7 @@ type MessageResult struct {
 
 func GenModel(table string, name string) {
 	GenStruct(table, name)
-	GenProtoMessage(table, name)
+	//GenProtoMessage(table, name)
 }
 
 func GenStruct(table string, structName string) {
