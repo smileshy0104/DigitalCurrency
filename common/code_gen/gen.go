@@ -80,7 +80,7 @@ func GenStruct(table string, structName string) {
 	// 定义一个Result类型的切片来存储表结构信息。
 	var results []*Result
 
-	// 执行SQL查询，获取表结构信息。
+	// 执行SQL查询，获取表结构信息。（会赋值Field和Type字段）
 	db.Raw(fmt.Sprintf("describe %s", table)).Scan(&results)
 
 	// 遍历查询结果，处理每个字段的信息。
@@ -93,8 +93,8 @@ func GenStruct(table string, structName string) {
 		tfName := TFName(v.Field) //驼峰命名  aaBb
 
 		// 更新字段名和类型，以及相关的标签信息。
-		v.Field = name
-		v.Type = getType(v.Type)
+		v.Field = name           // 字段名 AaBb
+		v.Type = getType(v.Type) // 进行数据库类型转换
 		v.Json = "`json:\"" + tfName + "\"`"
 		v.JsonForm = "`json:\"" + tfName + "\" form:\"" + tfName + "\"`"
 		v.Gorm = "`gorm:\"column:" + field + "\"`"
@@ -269,6 +269,7 @@ func TFName(name string) string {
 	var sb strings.Builder // 使用strings.Builder高效构建结果字符串
 
 	for index, value := range names {
+		// 将首个字符转换成小写字母
 		if index == 0 {
 			// 首字母转小写
 			s := names[:index+1]
@@ -307,7 +308,9 @@ func Name(name string) string {
 	isSkip := false        // 控制是否跳过下一个字符（用于处理下划线后的字符）
 	var sb strings.Builder // 使用strings.Builder高效构建结果字符串
 
+	// 遍历字符串的每个字符
 	for index, value := range names {
+		// 将首个字母转换为大写
 		if index == 0 {
 			// 首字母转大写
 			s := names[:index+1]
