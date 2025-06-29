@@ -86,7 +86,7 @@ func GenStruct(table string, structName string) {
 	// 遍历查询结果，处理每个字段的信息。
 	for _, v := range results {
 		// 将表字段名转换为符合Go命名规范的字段名。
-		field := v.Field
+		field := v.Field    // 数据表字段名称
 		name := Name(field) // 表字段 aa_bb  字段名 AaBb
 
 		// 使用驼峰命名法转换字段名。
@@ -166,6 +166,9 @@ func GenProtoMessage(table string, messageName string) {
 	log.Println(err)
 }
 
+// getMessageType 根据数据库字段类型返回对应的消息类型。
+// 参数 t 是数据库字段类型的字符串表示。
+// 返回值是字段在消息中的类型表示。
 func getMessageType(t string) string {
 	if strings.Contains(t, "bigint") {
 		return "int64"
@@ -193,6 +196,9 @@ func getMessageType(t string) string {
 	return ""
 }
 
+// getType 根据数据库字段类型返回对应的Go类型。
+// 参数 t 是数据库字段类型的字符串表示。
+// 返回值是字段在Go语言中的类型表示。
 func getType(t string) string {
 	if strings.Contains(t, "bigint") {
 		return "int64"
@@ -219,61 +225,81 @@ func getType(t string) string {
 	}
 	return ""
 }
+
+// TFName 将下划线风格的字符串转换为小驼峰风格的字符串。
+// 例如，将"user_name"转换为"userName"。
 func TFName(name string) string {
-	var names = name[:]
-	isSkip := false
-	var sb strings.Builder
+	var names = name[:]    // 将输入字符串转换为切片进行操作
+	isSkip := false        // 控制是否跳过下一个字符（用于处理下划线后的字符）
+	var sb strings.Builder // 使用strings.Builder高效构建结果字符串
+
 	for index, value := range names {
 		if index == 0 {
+			// 首字母转小写
 			s := names[:index+1]
 			s = strings.ToLower(s)
 			sb.WriteString(s)
 			continue
 		}
+
 		if isSkip {
+			// 如果已经处理了下划线，则跳过当前循环
 			isSkip = false
 			continue
 		}
-		//95 下划线  user_name
-		if value == 95 {
-			s := names[index+1 : index+2]
-			s = strings.ToUpper(s)
+
+		// 当遇到下划线时，将下划线后的字符转换为大写，并设置isSkip为true以跳过该字符
+		if value == 95 { // ASCII码中95对应'_'
+			s := names[index+1 : index+2] // 取下划线后的字符
+			s = strings.ToUpper(s)        // 转换为大写
 			sb.WriteString(s)
-			isSkip = true
+			isSkip = true // 设置标记，下次循环跳过该字符
 			continue
 		} else {
+			// 普通字符直接追加到结果中
 			s := names[index : index+1]
 			sb.WriteString(s)
 		}
 	}
-	return sb.String()
+
+	return sb.String() // 返回最终的小驼峰格式字符串
 }
+
+// Name 将下划线风格的字符串转换为大驼峰风格的字符串。
+// 例如，将"user_name"转换为"UserName"。
 func Name(name string) string {
-	var names = name[:]
-	isSkip := false
-	var sb strings.Builder
+	var names = name[:]    // 将输入字符串转换为切片进行操作
+	isSkip := false        // 控制是否跳过下一个字符（用于处理下划线后的字符）
+	var sb strings.Builder // 使用strings.Builder高效构建结果字符串
+
 	for index, value := range names {
 		if index == 0 {
+			// 首字母转大写
 			s := names[:index+1]
 			s = strings.ToUpper(s)
 			sb.WriteString(s)
 			continue
 		}
+
 		if isSkip {
+			// 如果已经处理了下划线，则跳过当前循环
 			isSkip = false
 			continue
 		}
-		//95 下划线  user_name
-		if value == 95 {
-			s := names[index+1 : index+2]
-			s = strings.ToUpper(s)
+
+		// 当遇到下划线时，将下划线后的字符转换为大写，并设置isSkip为true以跳过该字符
+		if value == 95 { // ASCII码中95对应'_'
+			s := names[index+1 : index+2] // 取下划线后的字符
+			s = strings.ToUpper(s)        // 转换为大写
 			sb.WriteString(s)
-			isSkip = true
+			isSkip = true // 设置标记，下次循环跳过该字符
 			continue
 		} else {
+			// 普通字符直接追加到结果中
 			s := names[index : index+1]
 			sb.WriteString(s)
 		}
 	}
-	return sb.String()
+
+	return sb.String() // 返回最终的大驼峰格式字符串
 }
