@@ -65,7 +65,7 @@ type MessageResult struct {
 
 func GenModel(table string, name string) {
 	GenStruct(table, name)
-	//GenProtoMessage(table, name)
+	GenProtoMessage(table, name)
 }
 
 // GenStruct 根据数据库表结构生成Go结构体代码。
