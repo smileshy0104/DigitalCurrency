@@ -2,67 +2,67 @@ package gen
 
 type Member struct {
 	Id                         int64   `json:"id" form:"id"`
-	AliNo                      string  `json:"aliNo" form:"aliNo"`
-	QrCodeUrl                  string  `json:"qrCodeUrl" form:"qrCodeUrl"`
-	AppealSuccessTimes         int     `json:"appealSuccessTimes" form:"appealSuccessTimes"`
-	AppealTimes                int     `json:"appealTimes" form:"appealTimes"`
-	ApplicationTime            int64   `json:"applicationTime" form:"applicationTime"`
+	AliNo                      string  `json:"ali_no" form:"ali_no"`
+	QrCodeUrl                  string  `json:"qr_code_url" form:"qr_code_url"`
+	AppealSuccessTimes         int     `json:"appeal_success_times" form:"appeal_success_times"`
+	AppealTimes                int     `json:"appeal_times" form:"appeal_times"`
+	ApplicationTime            int64   `json:"application_time" form:"application_time"`
 	Avatar                     string  `json:"avatar" form:"avatar"`
 	Bank                       string  `json:"bank" form:"bank"`
 	Branch                     string  `json:"branch" form:"branch"`
-	CardNo                     string  `json:"cardNo" form:"cardNo"`
-	CertifiedBusinessApplyTime int64   `json:"certifiedBusinessApplyTime" form:"certifiedBusinessApplyTime"`
-	CertifiedBusinessCheckTime int64   `json:"certifiedBusinessCheckTime" form:"certifiedBusinessCheckTime"`
-	CertifiedBusinessStatus    int     `json:"certifiedBusinessStatus" form:"certifiedBusinessStatus"`
-	ChannelId                  int     `json:"channelId" form:"channelId"`
+	CardNo                     string  `json:"card_no" form:"card_no"`
+	CertifiedBusinessApplyTime int64   `json:"certified_business_apply_time" form:"certified_business_apply_time"`
+	CertifiedBusinessCheckTime int64   `json:"certified_business_check_time" form:"certified_business_check_time"`
+	CertifiedBusinessStatus    int     `json:"certified_business_status" form:"certified_business_status"`
+	ChannelId                  int     `json:"channel_id" form:"channel_id"`
 	Email                      string  `json:"email" form:"email"`
-	FirstLevel                 int     `json:"firstLevel" form:"firstLevel"`
-	GoogleDate                 int64   `json:"googleDate" form:"googleDate"`
-	GoogleKey                  string  `json:"googleKey" form:"googleKey"`
-	GoogleState                int     `json:"googleState" form:"googleState"`
-	IdNumber                   string  `json:"idNumber" form:"idNumber"`
-	InviterId                  int64   `json:"inviterId" form:"inviterId"`
-	IsChannel                  int     `json:"isChannel" form:"isChannel"`
-	JyPassword                 string  `json:"jyPassword" form:"jyPassword"`
-	LastLoginTime              int64   `json:"lastLoginTime" form:"lastLoginTime"`
+	FirstLevel                 int     `json:"first_level" form:"first_level"`
+	GoogleDate                 int64   `json:"google_date" form:"google_date"`
+	GoogleKey                  string  `json:"google_key" form:"google_key"`
+	GoogleState                int     `json:"google_state" form:"google_state"`
+	IdNumber                   string  `json:"id_number" form:"id_number"`
+	InviterId                  int64   `json:"inviter_id" form:"inviter_id"`
+	IsChannel                  int     `json:"is_channel" form:"is_channel"`
+	JyPassword                 string  `json:"jy_password" form:"jy_password"`
+	LastLoginTime              int64   `json:"last_login_time" form:"last_login_time"`
 	City                       string  `json:"city" form:"city"`
 	Country                    string  `json:"country" form:"country"`
 	District                   string  `json:"district" form:"district"`
 	Province                   string  `json:"province" form:"province"`
-	LoginCount                 int     `json:"loginCount" form:"loginCount"`
-	LoginLock                  int     `json:"loginLock" form:"loginLock"`
+	LoginCount                 int     `json:"login_count" form:"login_count"`
+	LoginLock                  int     `json:"login_lock" form:"login_lock"`
 	Margin                     string  `json:"margin" form:"margin"`
-	MemberLevel                int     `json:"memberLevel" form:"memberLevel"`
-	MobilePhone                string  `json:"mobilePhone" form:"mobilePhone"`
+	MemberLevel                int     `json:"member_level" form:"member_level"`
+	MobilePhone                string  `json:"mobile_phone" form:"mobile_phone"`
 	Password                   string  `json:"password" form:"password"`
-	PromotionCode              string  `json:"promotionCode" form:"promotionCode"`
-	PublishAdvertise           int     `json:"publishAdvertise" form:"publishAdvertise"`
-	RealName                   string  `json:"realName" form:"realName"`
-	RealNameStatus             int     `json:"realNameStatus" form:"realNameStatus"`
-	RegistrationTime           int64   `json:"registrationTime" form:"registrationTime"`
+	PromotionCode              string  `json:"promotion_code" form:"promotion_code"`
+	PublishAdvertise           int     `json:"publish_advertise" form:"publish_advertise"`
+	RealName                   string  `json:"real_name" form:"real_name"`
+	RealNameStatus             int     `json:"real_name_status" form:"real_name_status"`
+	RegistrationTime           int64   `json:"registration_time" form:"registration_time"`
 	Salt                       string  `json:"salt" form:"salt"`
-	SecondLevel                int     `json:"secondLevel" form:"secondLevel"`
-	SignInAbility              int     `json:"signInAbility" form:"signInAbility"`
+	SecondLevel                int     `json:"second_level" form:"second_level"`
+	SignInAbility              int     `json:"sign_in_ability" form:"sign_in_ability"`
 	Status                     int     `json:"status" form:"status"`
-	ThirdLevel                 int     `json:"thirdLevel" form:"thirdLevel"`
+	ThirdLevel                 int     `json:"third_level" form:"third_level"`
 	Token                      string  `json:"token" form:"token"`
-	TokenExpireTime            int64   `json:"tokenExpireTime" form:"tokenExpireTime"`
-	TransactionStatus          int     `json:"transactionStatus" form:"transactionStatus"`
-	TransactionTime            int64   `json:"transactionTime" form:"transactionTime"`
+	TokenExpireTime            int64   `json:"token_expire_time" form:"token_expire_time"`
+	TransactionStatus          int     `json:"transaction_status" form:"transaction_status"`
+	TransactionTime            int64   `json:"transaction_time" form:"transaction_time"`
 	Transactions               int     `json:"transactions" form:"transactions"`
 	Username                   string  `json:"username" form:"username"`
-	QrWeCodeUrl                string  `json:"qrWeCodeUrl" form:"qrWeCodeUrl"`
+	QrWeCodeUrl                string  `json:"qr_we_code_url" form:"qr_we_code_url"`
 	Wechat                     string  `json:"wechat" form:"wechat"`
 	Local                      string  `json:"local" form:"local"`
 	Integration                int64   `json:"integration" form:"integration"`
-	MemberGradeId              int64   `json:"memberGradeId" form:"memberGradeId"`
-	KycStatus                  int     `json:"kycStatus" form:"kycStatus"`
-	GeneralizeTotal            int64   `json:"generalizeTotal" form:"generalizeTotal"`
-	InviterParentId            int64   `json:"inviterParentId" form:"inviterParentId"`
-	SuperPartner               string  `json:"superPartner" form:"superPartner"`
-	KickFee                    float64 `json:"kickFee" form:"kickFee"`
+	MemberGradeId              int64   `json:"member_grade_id" form:"member_grade_id"`
+	KycStatus                  int     `json:"kyc_status" form:"kyc_status"`
+	GeneralizeTotal            int64   `json:"generalize_total" form:"generalize_total"`
+	InviterParentId            int64   `json:"inviter_parent_id" form:"inviter_parent_id"`
+	SuperPartner               string  `json:"super_partner" form:"super_partner"`
+	KickFee                    float64 `json:"kick_fee" form:"kick_fee"`
 	Power                      float64 `json:"power" form:"power"`
-	TeamLevel                  int     `json:"teamLevel" form:"teamLevel"`
-	TeamPower                  float64 `json:"teamPower" form:"teamPower"`
-	MemberLevelId              int64   `json:"memberLevelId" form:"memberLevelId"`
+	TeamLevel                  int     `json:"team_level" form:"team_level"`
+	TeamPower                  float64 `json:"team_power" form:"team_power"`
+	MemberLevelId              int64   `json:"member_level_id" form:"member_level_id"`
 }
