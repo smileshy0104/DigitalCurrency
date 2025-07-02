@@ -86,36 +86,63 @@ func (l *MarketLogic) SymbolThumbTrend(req *types.MarketReq) (list []*types.Coin
 	return
 }
 
+// SymbolThumb 获取市场行情的缩略信息。
 func (l *MarketLogic) SymbolThumb(req *types.MarketReq) (list []*types.CoinThumbResp, err error) {
 	var thumbs []*market.CoinThumb
+	// 尝试从缓存中获取数据。
 	thumb := l.svcCtx.Processor.GetThumb()
+	// 检查缓存的数据是否为 CoinThumb 类型的切片。
 	if thumb != nil {
+		// 若缓存的数据为 CoinThumb 类型的切片，则将其赋值给 thumbs。
 		switch thumb.(type) {
 		case []*market.CoinThumb:
 			thumbs = thumb.([]*market.CoinThumb)
 		}
 	}
+	// 缓存中没有数据，则调用远程服务获取数据。
 	if err := copier.Copy(&list, thumbs); err != nil {
 		return nil, err
 	}
 	return
 }
 
+// SymbolInfo 查询指定市场的符号信息。
+// 该方法通过RPC调用获取指定符号（Symbol）的市场信息，并返回相关信息。
+// 参数:
+//
+//	req - 包含请求参数的MarketReq对象，包括IP地址和市场符号。
+//
+// 返回值:
+//
+//	*types.ExchangeCoinResp - 包含市场符号信息的响应对象。
+//	error - 如果发生错误，则返回错误信息。
 func (l *MarketLogic) SymbolInfo(req types.MarketReq) (resp *types.ExchangeCoinResp, err error) {
+	// 创建一个带有超时的上下文，以确保请求不会无限期地等待。
+	// 超时设置为10秒，以平衡响应速度和等待时间。
 	ctx, cancelFunc := context.WithTimeout(l.ctx, 10*time.Second)
+	// 在函数返回时取消上下文，以释放相关资源。
 	defer cancelFunc()
+
+	// 调用MarketRpc服务的FindSymbolInfo方法，根据IP和Symbol获取市场信息。
 	esRes, err := l.svcCtx.MarketRpc.FindSymbolInfo(ctx,
 		&market.MarketReq{
 			Ip:     req.Ip,
 			Symbol: req.Symbol,
 		})
+	// 如果发生错误，返回nil和错误信息。
 	if err != nil {
 		return nil, err
 	}
+
+	// 初始化一个ExchangeCoinResp对象来存储转换后的响应数据。
 	resp = &types.ExchangeCoinResp{}
+	// 使用copier.Copy将RPC调用的结果复制到响应对象中。
+	// 如果复制过程中发生错误，返回nil和错误信息。
 	if err := copier.Copy(resp, esRes); err != nil {
 		return nil, err
 	}
+
+	// 返回填充好的响应对象和nil错误，表示操作成功。
 	return
 }
 

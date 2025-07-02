@@ -55,7 +55,9 @@ func (l *MarketLogic) FindSymbolThumbTrend(req *market.MarketReq) (*market.Symbo
 	}, nil
 }
 
+// FindSymbolInfo 获取交易货币信息
 func (l *MarketLogic) FindSymbolInfo(req *market.MarketReq) (*market.ExchangeCoin, error) {
+	// 调用domain层获取交易货币信息
 	exchangeCoin, err := l.exchangeCoinDomain.FindBySymbol(l.ctx, req.Symbol)
 	if err != nil {
 		return nil, err

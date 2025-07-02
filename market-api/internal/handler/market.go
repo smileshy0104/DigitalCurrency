@@ -43,6 +43,7 @@ func (h *MarketHandler) SymbolThumb(w http.ResponseWriter, r *http.Request) {
 	//获取一下ip
 	req.Ip = tools.GetRemoteClientIp(r)
 	l := logic.NewMarketLogic(r.Context(), h.svcCtx)
+	// 调用货币行情模块逻辑层
 	resp, err := l.SymbolThumb(req)
 	result := newResult.Deal(resp, err)
 	httpx.OkJsonCtx(r.Context(), w, result)
@@ -51,13 +52,16 @@ func (h *MarketHandler) SymbolThumb(w http.ResponseWriter, r *http.Request) {
 // SymbolInfo 获取币种信息
 func (h *MarketHandler) SymbolInfo(w http.ResponseWriter, r *http.Request) {
 	var req types.MarketReq
+	// ParseForm 解析请求参数
 	if err := httpx.ParseForm(r, &req); err != nil {
 		httpx.ErrorCtx(r.Context(), w, err)
 		return
 	}
 	newResult := common.NewResult()
 	req.Ip = tools.GetRemoteClientIp(r)
+	// 创建市场模块逻辑层
 	l := logic.NewMarketLogic(r.Context(), h.svcCtx)
+	// 调用货币信息模块逻辑层
 	resp, err := l.SymbolInfo(req)
 	result := newResult.Deal(resp, err)
 	httpx.OkJsonCtx(r.Context(), w, result)

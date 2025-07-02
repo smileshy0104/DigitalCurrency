@@ -34,6 +34,7 @@ func (d *ExchangeCoinDomain) FindVisible(ctx context.Context) []*model.ExchangeC
 
 // FindBySymbol 根据交易对查询交易货币
 func (d *ExchangeCoinDomain) FindBySymbol(ctx context.Context, symbol string) (*model.ExchangeCoin, error) {
+	// 查询交易货币
 	exchangeCoin, err := d.exchangeCoinRepo.FindBySymbol(ctx, symbol)
 	if err != nil {
 		return nil, err
