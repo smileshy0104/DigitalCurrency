@@ -146,19 +146,36 @@ func (l *MarketLogic) SymbolInfo(req types.MarketReq) (resp *types.ExchangeCoinR
 	return
 }
 
+// CoinInfo 获取指定货币的市场信息。
+// 该方法通过RPC调用MarketRpc服务来查询货币信息，并将结果转换为types.Coin类型返回。
+// 参数req是包含查询条件的请求对象，如货币单位。
+// 返回值是一个填充了查询结果的types.Coin对象，以及一个错误对象，如果执行过程中遇到任何问题，则返回相应的错误。
 func (l *MarketLogic) CoinInfo(req *types.MarketReq) (*types.Coin, error) {
+	// 创建一个带有超时的上下文，以确保请求不会无限期地等待。
+	// 超时设置为5秒，这是与外部服务通信的一个常见合理限制。
 	ctx, cancel := context.WithTimeout(l.ctx, 5*time.Second)
+	// 确保在函数退出时取消上下文，释放相关资源。
 	defer cancel()
+
+	// 调用MarketRpc服务的FindCoinInfo方法获取货币信息。
+	// 这里传递的是从上下文中创建的带有超时的ctx，以及一个包含了查询条件的MarketReq对象。
 	coin, err := l.svcCtx.MarketRpc.FindCoinInfo(ctx, &market.MarketReq{
 		Unit: req.Unit,
 	})
+	// 如果查询过程中出现错误，返回nil和错误信息。
 	if err != nil {
 		return nil, err
 	}
+
+	// 创建一个types.Coin类型的对象来存储查询结果。
 	ec := &types.Coin{}
+	// 使用copier库将查询结果从RPC调用复制到types.Coin对象中。
+	// 这里处理数据转换，如果转换过程中出现错误，返回一个描述性的错误信息。
 	if err := copier.Copy(&ec, coin); err != nil {
 		return nil, errors.New("数据格式有误")
 	}
+
+	// 成功返回填充了查询结果的types.Coin对象。
 	return ec, nil
 }
 

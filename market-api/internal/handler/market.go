@@ -70,13 +70,16 @@ func (h *MarketHandler) SymbolInfo(w http.ResponseWriter, r *http.Request) {
 // CoinInfo 货币信息
 func (h *MarketHandler) CoinInfo(w http.ResponseWriter, r *http.Request) {
 	var req types.MarketReq
+	// ParseForm 解析请求参数
 	if err := httpx.ParseForm(r, &req); err != nil {
 		httpx.ErrorCtx(r.Context(), w, err)
 		return
 	}
 	ip := tools.GetRemoteClientIp(r)
 	req.Ip = ip
+	// 创建市场模块逻辑层
 	l := logic.NewMarketLogic(r.Context(), h.svcCtx)
+	// 调用货币信息模块逻辑层
 	resp, err := l.CoinInfo(&req)
 	result := common.NewResult().Deal(resp, err)
 	httpx.OkJsonCtx(r.Context(), w, result)

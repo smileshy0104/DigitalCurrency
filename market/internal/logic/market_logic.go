@@ -67,9 +67,11 @@ func (l *MarketLogic) FindSymbolInfo(req *market.MarketReq) (*market.ExchangeCoi
 	return ec, nil
 }
 
+// FindCoinInfo 获取币种信息
 func (l *MarketLogic) FindCoinInfo(req *market.MarketReq) (*market.Coin, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, 5*time.Second)
 	defer cancel()
+	// 调用domain层获取币种信息
 	coin, err := l.coinDomain.FindCoinInfo(ctx, req.Unit)
 	if err != nil {
 		return nil, err
