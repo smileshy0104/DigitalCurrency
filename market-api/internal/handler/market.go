@@ -85,6 +85,42 @@ func (h *MarketHandler) CoinInfo(w http.ResponseWriter, r *http.Request) {
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 
+// AllCoinInfo 获取所有货币信息
+func (h *MarketHandler) AllCoinInfo(w http.ResponseWriter, r *http.Request) {
+	var req types.MarketReq
+	// ParseForm 解析请求参数
+	if err := httpx.ParseForm(r, &req); err != nil {
+		httpx.ErrorCtx(r.Context(), w, err)
+		return
+	}
+	ip := tools.GetRemoteClientIp(r)
+	req.Ip = ip
+	// 创建市场模块逻辑层
+	l := logic.NewMarketLogic(r.Context(), h.svcCtx)
+	// 调用货币信息模块逻辑层
+	resp, err := l.AllCoinInfo(&req)
+	result := common.NewResult().Deal(resp, err)
+	httpx.OkJsonCtx(r.Context(), w, result)
+}
+
+// CoinInfoById 通过id获取货币信息
+func (h *MarketHandler) CoinInfoById(w http.ResponseWriter, r *http.Request) {
+	var req types.MarketReq
+	// ParseForm 解析请求参数
+	if err := httpx.ParseForm(r, &req); err != nil {
+		httpx.ErrorCtx(r.Context(), w, err)
+		return
+	}
+	ip := tools.GetRemoteClientIp(r)
+	req.Ip = ip
+	// 创建市场模块逻辑层
+	l := logic.NewMarketLogic(r.Context(), h.svcCtx)
+	// 调用货币信息模块逻辑层
+	resp, err := l.CoinInfoById(&req)
+	result := common.NewResult().Deal(resp, err)
+	httpx.OkJsonCtx(r.Context(), w, result)
+}
+
 // History
 func (h *MarketHandler) History(w http.ResponseWriter, r *http.Request) {
 	var req types.MarketReq

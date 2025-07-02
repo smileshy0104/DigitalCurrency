@@ -11,6 +11,7 @@ type RateResponse struct {
 }
 
 type MarketReq struct {
+	Id         int64  `json:"id,optional" form:"id,optional"`
 	Ip         string `json:"ip,optional"`
 	Symbol     string `json:"symbol,optional" form:"symbol,optional" path:"symbol,optional"`
 	Unit       string `json:"unit,optional" form:"unit,optional"`

@@ -26,6 +26,8 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	marketGroup.Post("/symbol-thumb", market.SymbolThumb)            // 获取币种缩略信息
 	marketGroup.Post("/symbol-info", market.SymbolInfo)              // 获取币种信息
 	marketGroup.Post("/coin-info", market.CoinInfo)                  // 获取货币信息
+	marketGroup.Post("/all-coin-info", market.AllCoinInfo)           // 获取所有货币信息
+	marketGroup.Post("/coin-info-by-id", market.CoinInfoById)        // 获取货币信息
 	marketGroup.Get("/history", market.History)
 
 	wsGroup := r.Group()
