@@ -74,15 +74,23 @@ func (k *KlineDao) FindBySymbol(ctx context.Context, symbol, period string, coun
 	return
 }
 
-// FindBySymbolTime 时间范围查询
-// ctx 上下文信息
-// symbol 货币类型
-// period kline周期
-// from 查询的开始时间
-// end 查询的结束时间
-// sort 排序方式，"asc"为升序，其他为降序
+// FindBySymbolTime 根据符号和时间范围查找K线数据。
+// 该方法从数据库中查询指定符号、周期和时间范围内的K线数据，并根据指定的排序方式返回结果。
+// 参数:
+//
+//	ctx: 上下文，用于传递请求范围的 deadline、取消信号、身份验证信息等。
+//	symbol: 交易对符号，例如 "BTCUSDT"。
+//	period: K线周期，例如 "1m"、"4h"。
+//	from: 查询时间范围的起始时间戳。
+//	end: 查询时间范围的结束时间戳。
+//	sort: 排序方式，"asc" 表示升序，其他值表示降序。
+//
+// 返回值:
+//
+//	list: 包含K线数据的切片。
+//	err: 错误信息，如果执行过程中遇到错误则返回。
 func (k *KlineDao) FindBySymbolTime(ctx context.Context, symbol, period string, from, end int64, sort string) (list []*model.Kline, err error) {
-	//安装时间范围 查询
+	// 安装时间范围 查询
 	mk := &model.Kline{}
 	sortInt := -1
 	if "asc" == sort {

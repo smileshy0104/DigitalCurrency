@@ -83,11 +83,13 @@ func (l *MarketLogic) FindCoinInfo(req *market.MarketReq) (*market.Coin, error) 
 	return mc, nil
 }
 
+// History 获取历史数据
 func (l *MarketLogic) HistoryKline(req *market.MarketReq) (*market.HistoryRes, error) {
 	//去mongo 表查询数据 按照时间范围进行查询 同时要排序 按照时间升序
 	ctx, cancel := context.WithTimeout(l.ctx, 10*time.Second)
 	defer cancel()
 	period := "1H"
+	// 获取不同的周期
 	if req.Resolution == "60" {
 		period = "1H"
 	} else if req.Resolution == "30" {
@@ -105,6 +107,7 @@ func (l *MarketLogic) HistoryKline(req *market.MarketReq) (*market.HistoryRes, e
 	} else if req.Resolution == "1M" {
 		period = "1M"
 	}
+	// 获取k线数据
 	histories, err := l.marketDomain.HistoryKline(ctx, req.Symbol, req.From, req.To, period)
 	if err != nil {
 		return nil, err

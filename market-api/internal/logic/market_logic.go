@@ -235,9 +235,11 @@ func (l *MarketLogic) CoinInfoById(req *types.MarketReq) (*types.Coin, error) {
 	return ec, nil
 }
 
+// History 获取指定货币的历史K线数据。
 func (l *MarketLogic) History(req *types.MarketReq) (*types.HistoryKline, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, 10*time.Second)
 	defer cancel()
+	// 调用MarketRpc服务的HistoryKline方法获取历史K线数据。
 	historyKline, err := l.svcCtx.MarketRpc.HistoryKline(ctx, &market.MarketReq{
 		Symbol:     req.Symbol,
 		From:       req.From,
@@ -247,8 +249,10 @@ func (l *MarketLogic) History(req *types.MarketReq) (*types.HistoryKline, error)
 	if err != nil {
 		return nil, err
 	}
+	// 获取历史K线数据列表
 	histories := historyKline.List
 	var list = make([][]any, len(histories))
+	// 遍历历史K线数据，将数据转换为通用类型，并保存到新的列表中。
 	for i, v := range histories {
 		content := make([]any, 6)
 		content[0] = v.Time

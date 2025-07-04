@@ -121,7 +121,7 @@ func (h *MarketHandler) CoinInfoById(w http.ResponseWriter, r *http.Request) {
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 
-// History
+// History 获取历史数据
 func (h *MarketHandler) History(w http.ResponseWriter, r *http.Request) {
 	var req types.MarketReq
 	if err := httpx.ParseForm(r, &req); err != nil {
@@ -130,7 +130,9 @@ func (h *MarketHandler) History(w http.ResponseWriter, r *http.Request) {
 	}
 	ip := tools.GetRemoteClientIp(r)
 	req.Ip = ip
+	// 创建市场模块逻辑层
 	l := logic.NewMarketLogic(r.Context(), h.svcCtx)
+	// 调用历史模块逻辑层
 	resp, err := l.History(&req)
 	result := common.NewResult().Deal(resp.List, err)
 	httpx.OkJsonCtx(r.Context(), w, result)
