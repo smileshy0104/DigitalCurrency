@@ -4,6 +4,7 @@
 package handler
 
 import (
+	"ucenter-api/internal/midd"
 	"ucenter-api/internal/svc"
 )
 
@@ -32,4 +33,9 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	// 在路由组中注册用户登录处理函数，处理用户登录的请求。
 	loginGroup.Post("/uc/login", login.Login)
 	loginGroup.Post("/uc/check/login", login.CheckLogin)
+	assetGroup := r.Group()
+	assetGroup.Use(midd.Auth(serverCtx.Config.JWT.AccessSecret))
+	//asset := NewAssetHandler(serverCtx)
+	//assetGroup.Post("/uc/asset/wallet/:coinName", asset.FindWalletBySymbol)
+
 }

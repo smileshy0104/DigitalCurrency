@@ -11,9 +11,11 @@ type Config struct {
 	rest.RestConf
 	// UCenterRpc 是用户中心服务的 RPC 配置，通过它来配置与用户中心服务的 RPC 通信。
 	UCenterRpc zrpc.RpcClientConf
-	JWT        AuthConfig
+	// JWT 是用于处理 JWT 的配置，包括访问令牌 secret 和过期时间。
+	JWT AuthConfig
 }
 
+// AuthConfig 是用于处理 JWT 的配置结构体，它包含访问令牌 secret 和过期时间。
 type AuthConfig struct {
 	AccessSecret string
 	AccessExpire int64
