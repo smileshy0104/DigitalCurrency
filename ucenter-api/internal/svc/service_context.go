@@ -17,6 +17,8 @@ type ServiceContext struct {
 	// ULoginRpc 是用户登录的RPC客户端，用于与用户中心服务进行通信。
 	// 通过这个客户端，服务可以调用用户中心服务接口，实现用户登录等功能。
 	ULoginRpc uc_client.Login
+
+	UCAssetRpc uc_client.Asset
 }
 
 // NewServiceContext 创建并返回一个新的 ServiceContext 实例。
@@ -30,5 +32,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:       c,
 		URegisterRpc: uc_client.NewRegister(zrpc.MustNewClient(c.UCenterRpc)),
 		ULoginRpc:    uc_client.NewLogin(zrpc.MustNewClient(c.UCenterRpc)),
+		UCAssetRpc:   uc_client.NewAsset(zrpc.MustNewClient(c.UCenterRpc)),
 	}
 }

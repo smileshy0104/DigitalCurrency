@@ -3,15 +3,18 @@ package svc
 import (
 	"common/db"
 	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/zrpc"
+	"grpc-common/market/mk_client"
 	"ucenter/internal/config"
 	"ucenter/internal/database"
 )
 
 // ServiceContext 服务上下文结构体
 type ServiceContext struct {
-	Config config.Config // 配置文件对象
-	Cache  cache.Cache   // 缓存组件
-	Db     *db.DB        // 数据库连接
+	Config    config.Config // 配置文件对象
+	Cache     cache.Cache   // 缓存组件
+	Db        *db.DB        // 数据库连接
+	MarketRpc mk_client.Market
 }
 
 // NewServiceContext 创建并初始化一个新的服务上下文。
@@ -33,8 +36,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	mysql := database.ConnMysql(c.Mysql.DataSource)
 	// 返回新的服务上下文对象，包含配置对象和初始化后的缓存组件。
 	return &ServiceContext{
-		Config: c,
-		Cache:  redisCache,
-		Db:     mysql,
+		Config:    c,
+		Cache:     redisCache,
+		Db:        mysql,
+		MarketRpc: mk_client.NewMarket(zrpc.MustNewClient(c.MarketRpc)),
 	}
 }
