@@ -44,6 +44,20 @@ func (l *AssetLogic) FindWalletBySymbol(req *asset.AssetReq) (*asset.MemberWalle
 	return resp, nil
 }
 
+// FindWallet 查找用户的所有钱包信息
+func (l *AssetLogic) FindWallet(req *asset.AssetReq) (*asset.MemberWalletList, error) {
+	//根据用户id查询用户的钱包 循环钱包信息 根据币种 查询币种详情
+	memberWalletCoins, err := l.memberWalletDomain.FindWallet(l.ctx, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	var list []*asset.MemberWallet
+	copier.Copy(&list, memberWalletCoins)
+	return &asset.MemberWalletList{
+		List: list,
+	}, nil
+}
+
 func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AssetLogic {
 	return &AssetLogic{
 		ctx:                ctx,

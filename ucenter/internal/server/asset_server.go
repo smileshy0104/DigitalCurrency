@@ -27,12 +27,11 @@ func (s *AssetServer) FindWalletBySymbol(ctx context.Context, in *asset.AssetReq
 	return l.FindWalletBySymbol(in)
 }
 
-//
-//
-//func (s *AssetServer) FindWallet(ctx context.Context, in *asset.AssetReq) (*asset.MemberWalletList, error) {
-//	l := logic.NewFindWalletLogic(ctx, s.svcCtx)
-//	return l.FindWallet(in)
-//}
+func (s *AssetServer) FindWallet(ctx context.Context, in *asset.AssetReq) (*asset.MemberWalletList, error) {
+	l := logic.NewAssetLogic(ctx, s.svcCtx)
+	return l.FindWallet(in)
+}
+
 //
 //func (s *AssetServer) ResetAddress(ctx context.Context, in *asset.AssetReq) (*asset.AssetResp, error) {
 //	l := logic.NewResetAddressLogic(ctx, s.svcCtx)

@@ -45,16 +45,18 @@ func (h *AssetHandler) FindWalletBySymbol(w http.ResponseWriter, r *http.Request
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 
-//
-//func (h *AssetHandler) FindWallet(w http.ResponseWriter, r *http.Request) {
-//	var req = types.AssetReq{}
-//	ip := tools.GetRemoteClientIp(r)
-//	req.Ip = ip
-//	l := logic.NewAssetLogic(r.Context(), h.svcCtx)
-//	resp, err := l.FindWallet(&req)
-//	result := common.NewResult().Deal(resp, err)
-//	httpx.OkJsonCtx(r.Context(), w, result)
-//}
+// FindWallet 查询用户钱包信息
+func (h *AssetHandler) FindWallet(w http.ResponseWriter, r *http.Request) {
+	var req = types.AssetReq{}
+	ip := tools.GetRemoteClientIp(r)
+	req.Ip = ip
+	l := logic.NewAssetLogic(r.Context(), h.svcCtx)
+	// 查询用户钱包信息
+	resp, err := l.FindWallet(&req)
+	result := common.NewResult().Deal(resp, err)
+	httpx.OkJsonCtx(r.Context(), w, result)
+}
+
 //
 //func (h *AssetHandler) ResetAddress(w http.ResponseWriter, r *http.Request) {
 //	var req types.AssetReq

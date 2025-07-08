@@ -40,5 +40,6 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	asset := NewAssetHandler(serverCtx)
 	// 在路由组中注册用户资产处理函数，处理用户资产查询的请求。
 	assetGroup.Post("/uc/asset/wallet/:coinName", asset.FindWalletBySymbol)
+	assetGroup.Post("/uc/asset/wallet", asset.FindWallet)
 
 }

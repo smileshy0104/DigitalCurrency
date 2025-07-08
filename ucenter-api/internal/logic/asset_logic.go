@@ -63,23 +63,39 @@ func (l *Asset) FindWalletBySymbol(req *types.AssetReq) (*types.MemberWallet, er
 	return resp, nil
 }
 
-//
-//func (l *Asset) FindWallet(req *types.AssetReq) ([]*types.MemberWallet, error) {
-//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//	defer cancel()
-//	value := l.ctx.Value("userId").(int64)
-//	memberWalletResp, err := l.svcCtx.UCAssetRpc.FindWallet(ctx, &asset.AssetReq{
-//		UserId: value,
-//	})
-//	if err != nil {
-//		return nil, err
-//	}
-//	var resp []*types.MemberWallet
-//	if err := copier.Copy(&resp, memberWalletResp.List); err != nil {
-//		return nil, err
-//	}
-//	return resp, nil
-//}
+// FindWallet 根据用户ID查找钱包信息。
+// 该方法从当前上下文中提取用户ID，并通过RPC调用获取用户的钱包信息。
+func (l *Asset) FindWallet(req *types.AssetReq) ([]*types.MemberWallet, error) {
+	// 创建一个带有超时的上下文，以确保请求不会无限期地等待。
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	// 在函数返回时取消上下文，释放相关资源。
+	defer cancel()
+
+	// 从上下文中获取userId值，转换为int64类型。
+	value := l.ctx.Value("userId").(int64)
+
+	// 调用RPC服务，根据userId查找钱包信息。
+	memberWalletResp, err := l.svcCtx.UCAssetRpc.FindWallet(ctx, &asset.AssetReq{
+		UserId: value,
+	})
+	if err != nil {
+		// 如果发生错误，返回nil和错误信息。
+		return nil, err
+	}
+
+	// 初始化响应切片。
+	var resp []*types.MemberWallet
+
+	// 使用copier库复制钱包信息列表到响应切片。
+	if err := copier.Copy(&resp, memberWalletResp.List); err != nil {
+		// 如果复制过程中发生错误，返回nil和错误信息。
+		return nil, err
+	}
+
+	// 返回钱包信息切片和nil错误，表示操作成功。
+	return resp, nil
+}
+
 //
 //func (l *Asset) ResetAddress(req *types.AssetReq) (string, error) {
 //	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
