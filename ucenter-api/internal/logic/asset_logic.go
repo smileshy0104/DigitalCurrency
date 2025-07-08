@@ -28,13 +28,6 @@ func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Asset {
 // 该方法从当前上下文中提取用户ID，并结合请求中提供的货币名称，
 // 通过RPC调用资产服务来获取用户对应货币的钱包信息。
 // 主要解决了如何在大量用户和货币种类中高效查找特定用户和货币的钱包信息问题。
-// 参数:
-//
-//	req (*types.AssetReq): 包含用户请求信息的结构体，主要包括用户希望查询的货币名称。
-//
-// 返回值:
-//
-//	(*types.MemberWallet, error): 返回用户指定货币的钱包信息，如果查找过程中遇到任何问题，则返回错误。
 func (l *Asset) FindWalletBySymbol(req *types.AssetReq) (*types.MemberWallet, error) {
 	// 创建一个带有超时的上下文，以确保请求不会无限期地等待。
 	// 这里设置的超时时间是5秒，旨在防止在服务调用响应缓慢时导致资源浪费或潜在的死锁情况。

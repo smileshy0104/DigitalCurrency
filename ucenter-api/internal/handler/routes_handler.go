@@ -32,10 +32,13 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	loginGroup := r.Group()
 	// 在路由组中注册用户登录处理函数，处理用户登录的请求。
 	loginGroup.Post("/uc/login", login.Login)
+	// 在路由组中注册用户登录检查处理函数，处理用户登录检查的请求。
 	loginGroup.Post("/uc/check/login", login.CheckLogin)
+	// 创建一个新的资产处理实例。
 	assetGroup := r.Group()
 	assetGroup.Use(midd.Auth(serverCtx.Config.JWT.AccessSecret))
 	asset := NewAssetHandler(serverCtx)
+	// 在路由组中注册用户资产处理函数，处理用户资产查询的请求。
 	assetGroup.Post("/uc/asset/wallet/:coinName", asset.FindWalletBySymbol)
 
 }
