@@ -17,3 +17,9 @@ UCenterRpc:
 JWT:
   AccessSecret: "!@#$mscoin"
   AccessExpire: 604800
+
+MarketRpc:
+  Etcd:
+    Hosts:
+      - 8.153.166.227:2379
+    Key: market.rpc
