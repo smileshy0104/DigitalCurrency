@@ -27,8 +27,8 @@ func (d *MemberWalletDomain) FindWalletBySymbol(ctx context.Context, id int64, n
 	if err != nil {
 		return nil, err
 	}
+	// 如果钱包信息不存在，新建并存储
 	if mw == nil {
-		// 如果钱包信息不存在，新建并存储
 		mw, walletCoin := model.NewMemberWallet(id, coin)
 		err := d.memberWalletRepo.Save(ctx, mw)
 		if err != nil {

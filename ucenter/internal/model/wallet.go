@@ -47,15 +47,31 @@ type MemberWalletCoin struct {
 	ToReleased     float64      `json:"toReleased" from:"toReleased"`
 }
 
+// NewMemberWallet 创建一个新的会员钱包及其对应币种信息。
+// 这个函数接收一个会员ID和一个币种对象，然后创建并返回一个MemberWallet实例和一个MemberWalletCoin实例。
+// 参数:
+//
+//	memId - 会员ID，用于标识会员钱包的拥有者。
+//	coin - 币种对象，包含了需要创建钱包的币种信息。
+//
+// 返回值:
+//
+//	*MemberWallet - 会员钱包实例，包含了会员ID、币种ID和币种名称。
+//	*MemberWalletCoin - 会员钱包币种实例，包含了会员ID和币种对象。
 func NewMemberWallet(memId int64, coin *market.Coin) (*MemberWallet, *MemberWalletCoin) {
+	// 创建会员钱包实例，设置会员ID、币种ID和币种名称。
 	mw := &MemberWallet{
 		MemberId: memId,
 		CoinId:   int64(coin.Id),
 		CoinName: coin.Unit,
 	}
+
+	// 创建会员钱包币种实例，设置会员ID和币种对象。
 	mwc := &MemberWalletCoin{
 		MemberId: memId,
 		Coin:     coin,
 	}
+
+	// 返回会员钱包实例和会员钱包币种实例。
 	return mw, mwc
 }
