@@ -19,13 +19,16 @@ type MemberWalletDomain struct {
 	redisCache       cache.Cache
 }
 
+// FindWalletBySymbol 根据用户ID和币种名称查找钱包信息。
+// 如果钱包不存在，则创建新的钱包并存储。
 func (d *MemberWalletDomain) FindWalletBySymbol(ctx context.Context, id int64, name string, coin *mk_client.Coin) (*model.MemberWalletCoin, error) {
+	// 尝试根据用户ID和币种名称查找钱包信息。
 	mw, err := d.memberWalletRepo.FindByIdAndCoinName(ctx, id, name)
 	if err != nil {
 		return nil, err
 	}
 	if mw == nil {
-		//新建并存储
+		// 如果钱包信息不存在，新建并存储
 		mw, walletCoin := model.NewMemberWallet(id, coin)
 		err := d.memberWalletRepo.Save(ctx, mw)
 		if err != nil {
@@ -33,6 +36,7 @@ func (d *MemberWalletDomain) FindWalletBySymbol(ctx context.Context, id int64, n
 		}
 		return walletCoin, nil
 	}
+	// 如果钱包信息已存在，复制到新的结构体并返回
 	nwc := &model.MemberWalletCoin{}
 	copier.Copy(nwc, mw)
 	nwc.Coin = coin

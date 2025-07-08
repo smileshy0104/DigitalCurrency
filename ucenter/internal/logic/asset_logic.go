@@ -19,21 +19,28 @@ type AssetLogic struct {
 	memberWalletDomain *domain.MemberWalletDomain
 }
 
+// FindWalletBySymbol 根据币种符号查找用户的钱包信息。
+// 该方法首先通过市场RPC服务查询币种信息，然后根据用户ID和币种符号查找用户的钱包信息。
 func (l *AssetLogic) FindWalletBySymbol(req *asset.AssetReq) (*asset.MemberWallet, error) {
-	//通过market rpc 进行coin表的查询 coin信息
-	//通过钱包 查询对应币的钱包信息  coin_id  user_id 查询用户的钱包信息 组装信息
+	// 通过市场RPC服务查询币种信息。
 	coinInfo, err := l.svcCtx.MarketRpc.FindCoinInfo(l.ctx, &market.MarketReq{
 		Unit: req.CoinName,
 	})
 	if err != nil {
 		return nil, err
 	}
+
+	// 根据用户ID、币种符号和币种信息查找用户的钱包信息。
 	memberWalletCoin, err := l.memberWalletDomain.FindWalletBySymbol(l.ctx, req.UserId, req.CoinName, coinInfo)
 	if err != nil {
 		return nil, err
 	}
+
+	// 创建响应对象并将找到的钱包信息复制到响应对象中。
 	resp := &asset.MemberWallet{}
 	copier.Copy(resp, memberWalletCoin)
+
+	// 返回用户的钱包信息。
 	return resp, nil
 }
 
