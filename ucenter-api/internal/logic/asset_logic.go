@@ -96,20 +96,22 @@ func (l *Asset) FindWallet(req *types.AssetReq) ([]*types.MemberWallet, error) {
 	return resp, nil
 }
 
-//
-//func (l *Asset) ResetAddress(req *types.AssetReq) (string, error) {
-//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//	defer cancel()
-//	value := l.ctx.Value("userId").(int64)
-//	_, err := l.svcCtx.UCAssetRpc.ResetAddress(ctx, &asset.AssetReq{
-//		UserId:   value,
-//		CoinName: req.Unit,
-//	})
-//	if err != nil {
-//		return "", err
-//	}
-//	return "", nil
-//}
+// ResetAddress 重置用户钱包地址
+func (l *Asset) ResetAddress(req *types.AssetReq) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	value := l.ctx.Value("userId").(int64)
+	// 调用RPC服务，将用户ID和币种名称作为参数传递给服务。
+	_, err := l.svcCtx.UCAssetRpc.ResetAddress(ctx, &asset.AssetReq{
+		UserId:   value,
+		CoinName: req.Unit,
+	})
+	if err != nil {
+		return "", err
+	}
+	return "", nil
+}
+
 //
 //func (l *Asset) FindTransaction(req *types.AssetReq) (*pages.PageResult, error) {
 //	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

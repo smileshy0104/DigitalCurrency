@@ -32,11 +32,12 @@ func (s *AssetServer) FindWallet(ctx context.Context, in *asset.AssetReq) (*asse
 	return l.FindWallet(in)
 }
 
-//
-//func (s *AssetServer) ResetAddress(ctx context.Context, in *asset.AssetReq) (*asset.AssetResp, error) {
-//	l := logic.NewResetAddressLogic(ctx, s.svcCtx)
-//	return l.ResetAddress(in)
-//}
+func (s *AssetServer) ResetAddress(ctx context.Context, in *asset.AssetReq) (*asset.AssetResp, error) {
+	l := logic.NewAssetLogic(ctx, s.svcCtx)
+	return l.ResetAddress(in)
+}
+
+/
 //
 //func (s *AssetServer) FindTransaction(ctx context.Context, in *asset.AssetReq) (*asset.MemberTransactionList, error) {
 //	l := logic.NewFindTransactionLogic(ctx, s.svcCtx)

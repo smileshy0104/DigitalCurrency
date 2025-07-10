@@ -92,6 +92,18 @@ func (d *MemberWalletDomain) FindWallet(ctx context.Context, userId int64) (list
 	return list, nil
 }
 
+func (d *MemberWalletDomain) FindWalletByMemIdAndCoin(ctx context.Context, memberId int64, coinName string) (*model.MemberWallet, error) {
+	mw, err := d.memberWalletRepo.FindByIdAndCoinName(ctx, memberId, coinName)
+	if err != nil {
+		return nil, err
+	}
+	return mw, nil
+}
+
+func (d *MemberWalletDomain) UpdateAddress(ctx context.Context, wallet *model.MemberWallet) error {
+	return d.memberWalletRepo.UpdateAddress(ctx, wallet)
+}
+
 func NewMemberWalletDomain(db *db.DB, marketRpc mk_client.Market, redisCache cache.Cache) *MemberWalletDomain {
 	return &MemberWalletDomain{
 		memberWalletRepo: dao.NewMemberWalletDao(db),

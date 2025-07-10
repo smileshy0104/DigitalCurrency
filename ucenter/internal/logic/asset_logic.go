@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"common/bc"
 	"context"
 	"github.com/jinzhu/copier"
 	"grpc-common/market/types/market"
@@ -56,6 +57,31 @@ func (l *AssetLogic) FindWallet(req *asset.AssetReq) (*asset.MemberWalletList, e
 	return &asset.MemberWalletList{
 		List: list,
 	}, nil
+}
+
+func (l *AssetLogic) ResetAddress(req *asset.AssetReq) (*asset.AssetResp, error) {
+	//查询用户的钱包 检查address是否为空 如果未空 生成地址 进行更新
+	memberWallet, err := l.memberWalletDomain.FindWalletByMemIdAndCoin(l.ctx, req.UserId, req.CoinName)
+	if err != nil {
+		return nil, err
+	}
+	if req.CoinName == "BTC" {
+		if memberWallet.Address == "" {
+			wallet, err := bc.NewWallet()
+			if err != nil {
+				return nil, err
+			}
+			address := wallet.GetTestAddress()
+			priKey := wallet.GetPriKey()
+			memberWallet.AddressPrivateKey = priKey
+			memberWallet.Address = string(address)
+			err = l.memberWalletDomain.UpdateAddress(l.ctx, memberWallet)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	return &asset.AssetResp{}, nil
 }
 
 func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AssetLogic {
