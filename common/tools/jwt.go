@@ -8,15 +8,6 @@ import (
 )
 
 // ParseToken 解析JWT令牌，验证其有效性并返回用户ID和过期时间
-// 参数:
-//
-//	tokenString: JWT令牌字符串
-//	secret: 用于签名验证的密钥
-//
-// 返回值:
-//
-//	int64: 用户ID
-//	error: 错误信息，如果令牌无效或解析出错
 func ParseToken(tokenString string, secret string) (int64, error) {
 	// 解析JWT令牌，使用指定的密钥进行签名验证
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {

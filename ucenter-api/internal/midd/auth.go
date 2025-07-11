@@ -13,7 +13,6 @@ import (
 // 返回一个中间件函数，该中间件函数可以包装另一个处理函数，
 // 以确保只有通过认证的请求才能被处理。
 func Auth(secret string) func(next http.HandlerFunc) http.HandlerFunc {
-	// 返回一个中间件函数，该函数接受下一个要执行的处理函数作为参数。
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		// 返回一个处理函数，它将接收一个 ResponseWriter 和一个指向 Request 的指针。
 		return func(w http.ResponseWriter, r *http.Request) {
