@@ -16,12 +16,14 @@ type LoginServer struct {
 	login.UnimplementedLoginServer
 }
 
+// NewLoginServer 注册Login服务
 func NewLoginServer(svcCtx *svc.ServiceContext) *LoginServer {
 	return &LoginServer{
 		svcCtx: svcCtx,
 	}
 }
 
+// Login 登录方法
 func (s *LoginServer) Login(ctx context.Context, in *login.LoginReq) (*login.LoginRes, error) {
 	l := logic.NewLoginLogic(ctx, s.svcCtx)
 	return l.Login(in)

@@ -24,14 +24,14 @@ func main() {
 	// 加载配置文件
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
-	// 创建并初始化一个新的服务上下文（初始化各个组件）
+	// 创建并初始化一个“新的服务上下文”（初始化各个组件）
 	ctx := svc.NewServiceContext(c)
 
 	// 创建一个新的 gRPC 服务器，并注册 RegisterServer 和反射服务
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		register.RegisterRegisterServer(grpcServer, server.NewRegisterServer(ctx))
-		login.RegisterLoginServer(grpcServer, server.NewLoginServer(ctx))
-		asset.RegisterAssetServer(grpcServer, server.NewAssetServer(ctx))
+		register.RegisterRegisterServer(grpcServer, server.NewRegisterServer(ctx)) // 注册服务
+		login.RegisterLoginServer(grpcServer, server.NewLoginServer(ctx))          // 登录服务
+		asset.RegisterAssetServer(grpcServer, server.NewAssetServer(ctx))          // 资产服务
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
