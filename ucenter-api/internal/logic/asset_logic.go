@@ -10,17 +10,29 @@ import (
 	"ucenter-api/internal/types"
 )
 
+// Asset 结构体用于封装资产相关的业务逻辑
+// 包含日志记录器、上下文和服务上下文
 type Asset struct {
-	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	logx.Logger                     // 日志记录器，支持日志打印功能
+	ctx         context.Context     // 请求上下文，用于传递请求级数据
+	svcCtx      *svc.ServiceContext // 服务上下文，包含服务配置和依赖项
 }
 
+// NewAssetLogic 创建并初始化Asset逻辑处理器实例
+// 参数:
+//
+//	ctx: context.Context - 请求上下文
+//	svcCtx: *svc.ServiceContext - 服务配置上下文
+//
+// 返回值:
+//
+//	*Asset - 初始化完成的Asset逻辑处理器指针
 func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Asset {
+	// 创建Asset实例并注入上下文依赖
 	return &Asset{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger: logx.WithContext(ctx), // 创建带上下文信息的日志记录器
+		ctx:    ctx,                   // 保存请求上下文
+		svcCtx: svcCtx,                // 保存服务配置上下文
 	}
 }
 

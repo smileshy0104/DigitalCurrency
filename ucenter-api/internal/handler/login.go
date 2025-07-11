@@ -37,6 +37,7 @@ func (h *LoginHandler) Login(w http.ResponseWriter, r *http.Request) {
 	//}
 	//获取一下ip
 	req.Ip = tools.GetRemoteClientIp(r)
+	// 登录逻辑
 	l := logic.NewLoginLogic(r.Context(), h.svcCtx)
 	resp, err := l.Login(&req)
 	result := newResult.Deal(resp, err)
