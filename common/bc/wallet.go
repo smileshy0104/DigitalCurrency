@@ -29,6 +29,7 @@ type Wallet struct {
 	PublicKey  []byte
 }
 
+// newKeyPair 创建一个私钥和公钥
 func NewWallet() (*Wallet, error) {
 	privateKey, publicKey, err := newKeyPair()
 	if err != nil {
@@ -99,6 +100,8 @@ func (wallet *Wallet) GetPriKey() string {
 	i := b.Bytes()
 	return string(Base58Encode(i))
 }
+
+// ResetPriKey 重置私钥
 func (wallet *Wallet) ResetPriKey(key string) error {
 	//反序列化私钥
 	decode := Base58Decode([]byte(key))
