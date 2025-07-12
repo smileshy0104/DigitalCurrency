@@ -12,12 +12,14 @@ type MemberWalletDao struct {
 	conn *gorms.GormConn
 }
 
+// Save 保存会员钱包
 func (m *MemberWalletDao) Save(ctx context.Context, mw *model.MemberWallet) error {
 	session := m.conn.Session(ctx)
 	err := session.Save(&mw).Error
 	return err
 }
 
+// FindByIdAndCoinName 通过会员id和币种名称查询会员钱包
 func (m *MemberWalletDao) FindByIdAndCoinName(ctx context.Context, memId int64, coinName string) (mw *model.MemberWallet, err error) {
 	session := m.conn.Session(ctx)
 	err = session.Model(&model.MemberWallet{}).

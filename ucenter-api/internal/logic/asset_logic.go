@@ -19,14 +19,6 @@ type Asset struct {
 }
 
 // NewAssetLogic 创建并初始化Asset逻辑处理器实例
-// 参数:
-//
-//	ctx: context.Context - 请求上下文
-//	svcCtx: *svc.ServiceContext - 服务配置上下文
-//
-// 返回值:
-//
-//	*Asset - 初始化完成的Asset逻辑处理器指针
 func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Asset {
 	// 创建Asset实例并注入上下文依赖
 	return &Asset{

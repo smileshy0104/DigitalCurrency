@@ -10,11 +10,18 @@ import (
 	"ucenter-api/internal/types"
 )
 
+// AssetHandler 处理与资产相关的操作。
+// 它依赖于服务上下文 svcCtx 来进行操作。
 type AssetHandler struct {
+	// svcCtx 是服务的上下文，包含了处理资产时需要的服务信息和配置。
 	svcCtx *svc.ServiceContext
 }
 
+// NewAssetHandler 创建并返回一个新的 AssetHandler 实例。
+// 参数 svcCtx 是服务的上下文，对于处理资产是必需的。
+// 返回值是新创建的 AssetHandler 实例，通过它来执行与资产相关的操作。
 func NewAssetHandler(svcCtx *svc.ServiceContext) *AssetHandler {
+	// 使用给定的服务上下文初始化 AssetHandler，并返回该实例。
 	return &AssetHandler{
 		svcCtx: svcCtx,
 	}

@@ -36,7 +36,7 @@ func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AssetLogic 
 // FindWalletBySymbol 根据币种符号查找用户的钱包信息。
 // 该方法首先通过市场RPC服务查询币种信息，然后根据用户ID和币种符号查找用户的钱包信息。
 func (l *AssetLogic) FindWalletBySymbol(req *asset.AssetReq) (*asset.MemberWallet, error) {
-	// 通过市场RPC服务查询币种信息。
+	// 通过MarketRpc服务中的查询币种信息。
 	coinInfo, err := l.svcCtx.MarketRpc.FindCoinInfo(l.ctx, &market.MarketReq{
 		Unit: req.CoinName,
 	})

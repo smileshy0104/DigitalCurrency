@@ -39,6 +39,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:    c,
 		Cache:     redisCache,
 		Db:        mysql,
-		MarketRpc: mk_client.NewMarket(zrpc.MustNewClient(c.MarketRpc)),
+		MarketRpc: mk_client.NewMarket(zrpc.MustNewClient(c.MarketRpc)), // 创建MarketRpc客户端实例。
 	}
 }

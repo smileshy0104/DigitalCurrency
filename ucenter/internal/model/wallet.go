@@ -18,7 +18,7 @@ type MemberWallet struct {
 	CoinId            int64   `gorm:"column:coin_id"`
 	ToReleased        float64 `gorm:"column:to_released"`
 	CoinName          string  `gorm:"column:coin_name"`
-	AddressPrivateKey string  `gorm:"address_private_key"`
+	AddressPrivateKey string  `gorm:"-"`
 }
 
 func (*MemberWallet) TableName() string {

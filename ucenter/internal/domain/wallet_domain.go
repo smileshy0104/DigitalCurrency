@@ -46,17 +46,18 @@ func NewMemberWalletDomain(db *db.DB, marketRpc mk_client.Market, redisCache cac
 
 // FindWalletBySymbol 根据用户ID和币种名称查找钱包信息。
 // 如果钱包不存在，则创建新的钱包并存储。
-func (d *MemberWalletDomain) FindWalletBySymbol(ctx context.Context, id int64, name string, coin *mk_client.Coin) (*model.MemberWalletCoin, error) {
+func (d *MemberWalletDomain) FindWalletBySymbol(ctx context.Context, user_id int64, coin_name string, coin *mk_client.Coin) (*model.MemberWalletCoin, error) {
 	// 尝试根据用户ID和币种名称查找钱包信息。
-	mw, err := d.memberWalletRepo.FindByIdAndCoinName(ctx, id, name)
+	mw, err := d.memberWalletRepo.FindByIdAndCoinName(ctx, user_id, coin_name)
 	if err != nil {
 		return nil, err
 	}
 	// 如果钱包信息不存在，新建并存储
 	if mw == nil {
-		mw, walletCoin := model.NewMemberWallet(id, coin)
+		// 创建新的钱包信息
+		mwnew, walletCoin := model.NewMemberWallet(user_id, coin)
 		// 调用存储方法Save
-		err := d.memberWalletRepo.Save(ctx, mw)
+		err = d.memberWalletRepo.Save(ctx, mwnew)
 		if err != nil {
 			return nil, err
 		}
