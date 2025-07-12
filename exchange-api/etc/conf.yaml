@@ -1,0 +1,33 @@
+# 定义服务的名称
+Name: exchange-api
+# 指定服务运行的主机地址
+Host: 127.0.0.1
+# 指定服务运行的端口号
+Port: 8890
+
+Prefix: "/exchange"
+
+# 定义ExchangeRpc服务的配置
+ExchangeRpc:
+  # 使用Etcd作为服务发现和配置管理的后端
+  Etcd:
+    # 指定Etcd集群的主机列表
+    Hosts:
+      - 8.153.166.227:2379
+    # 定义在Etcd中存储的键名，用于服务发现
+    Key: exchange.rpc
+
+# 配置Kafka相关参数
+Kafka:
+  # Kafka服务器的地址
+  Addr: localhost:9092
+  # 写入Kafka的消息容量限制
+  WriteCap: 100
+  # 从Kafka读取消息的容量限制
+  ReadCap: 100
+  # Kafka消费者的消费者组名称
+  ConsumerGroup: "kline1m-thumb-consumer"
+
+JWT:
+  AccessSecret: "!@#$mscoin"
+  AccessExpire: 604800
