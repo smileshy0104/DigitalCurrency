@@ -2,6 +2,8 @@ go 1.24.2
 
 use (
 	./common
+	./exchange
+	./exchange-api
 	./grpc-common
 	./job-center
 	./market
