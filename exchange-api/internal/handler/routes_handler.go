@@ -4,6 +4,7 @@
 package handler
 
 import (
+	"exchange-api/internal/midd"
 	"exchange-api/internal/svc"
 )
 
@@ -14,5 +15,8 @@ import (
 //	r *Routers - 路由器指针，用于注册处理函数。
 //	serverCtx *svc.ServiceContext - 服务上下文指针，包含处理函数所需的上下文信息。
 func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
-
+	order := NewOrderHandler(serverCtx)
+	orderGroup := r.Group()
+	orderGroup.Use(midd.Auth(serverCtx.Config.JWT.AccessSecret))
+	orderGroup.Post("/order/history", order.History)
 }
