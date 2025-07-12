@@ -14,11 +14,34 @@ import (
 	"ucenter/internal/repo"
 )
 
+// MemberWalletDomain 是一个领域对象，负责处理与会员钱包相关的业务逻辑。
+// 它依赖于以下组件：
+// - memberWalletRepo: 用于访问会员钱包的数据库操作接口。
+// - transaction: 用于管理数据库事务的操作接口。
+// - marketRpc: 用于与市场服务进行远程调用的客户端。
+// - redisCache: 用于缓存数据的接口。
 type MemberWalletDomain struct {
 	memberWalletRepo repo.MemberWalletRepo
 	transaction      tran.Transaction
 	marketRpc        mk_client.Market
 	redisCache       cache.Cache
+}
+
+// NewMemberWalletDomain 创建并返回一个 MemberWalletDomain 实例。
+// 参数:
+// - db: 数据库连接对象，用于初始化数据库相关的仓库和事务管理器。
+// - marketRpc: 市场服务的 RPC 客户端，用于与市场服务交互。
+// - redisCache: 缓存接口，用于存储和读取缓存数据。
+// 返回值:
+// - *MemberWalletDomain: 初始化完成的 MemberWalletDomain 实例。
+func NewMemberWalletDomain(db *db.DB, marketRpc mk_client.Market, redisCache cache.Cache) *MemberWalletDomain {
+	// 初始化 MemberWalletDomain 的各个依赖组件。
+	return &MemberWalletDomain{
+		memberWalletRepo: dao.NewMemberWalletDao(db),   // 使用数据库连接初始化会员钱包仓库。
+		transaction:      tran.NewTransaction(db.Conn), // 使用数据库连接初始化事务管理器。
+		marketRpc:        marketRpc,                    // 直接注入市场服务 RPC 客户端。
+		redisCache:       redisCache,                   // 直接注入缓存接口。
+	}
 }
 
 // FindWalletBySymbol 根据用户ID和币种名称查找钱包信息。
@@ -32,6 +55,7 @@ func (d *MemberWalletDomain) FindWalletBySymbol(ctx context.Context, id int64, n
 	// 如果钱包信息不存在，新建并存储
 	if mw == nil {
 		mw, walletCoin := model.NewMemberWallet(id, coin)
+		// 调用存储方法Save
 		err := d.memberWalletRepo.Save(ctx, mw)
 		if err != nil {
 			return nil, err
@@ -102,13 +126,4 @@ func (d *MemberWalletDomain) FindWalletByMemIdAndCoin(ctx context.Context, membe
 
 func (d *MemberWalletDomain) UpdateAddress(ctx context.Context, wallet *model.MemberWallet) error {
 	return d.memberWalletRepo.UpdateAddress(ctx, wallet)
-}
-
-func NewMemberWalletDomain(db *db.DB, marketRpc mk_client.Market, redisCache cache.Cache) *MemberWalletDomain {
-	return &MemberWalletDomain{
-		memberWalletRepo: dao.NewMemberWalletDao(db),
-		transaction:      tran.NewTransaction(db.Conn),
-		marketRpc:        marketRpc,
-		redisCache:       redisCache,
-	}
 }

@@ -12,12 +12,25 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
+// AssetLogic 资产相关业务逻辑处理结构体
+// 包含上下文、服务依赖、日志组件及成员资产领域对象
 type AssetLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	memberDomain       *domain.MemberDomain
 	memberWalletDomain *domain.MemberWalletDomain
+}
+
+// NewAssetLogic 创建资产逻辑处理器实例
+func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AssetLogic {
+	return &AssetLogic{
+		ctx:                ctx,
+		svcCtx:             svcCtx,
+		Logger:             logx.WithContext(ctx),
+		memberDomain:       domain.NewMemberDomain(svcCtx.Db),
+		memberWalletDomain: domain.NewMemberWalletDomain(svcCtx.Db, svcCtx.MarketRpc, svcCtx.Cache),
+	}
 }
 
 // FindWalletBySymbol 根据币种符号查找用户的钱包信息。
@@ -82,14 +95,4 @@ func (l *AssetLogic) ResetAddress(req *asset.AssetReq) (*asset.AssetResp, error)
 		}
 	}
 	return &asset.AssetResp{}, nil
-}
-
-func NewAssetLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AssetLogic {
-	return &AssetLogic{
-		ctx:                ctx,
-		svcCtx:             svcCtx,
-		Logger:             logx.WithContext(ctx),
-		memberDomain:       domain.NewMemberDomain(svcCtx.Db),
-		memberWalletDomain: domain.NewMemberWalletDomain(svcCtx.Db, svcCtx.MarketRpc, svcCtx.Cache),
-	}
 }
