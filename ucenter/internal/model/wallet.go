@@ -6,25 +6,37 @@ import (
 	"grpc-common/market/types/market"
 )
 
+// MemberWallet 用户钱包结构体
+// 用于表示用户在系统中的钱包信息，包括余额、冻结余额等
 type MemberWallet struct {
-	Id                int64   `gorm:"column:id"`
-	Address           string  `gorm:"column:address"`
-	Balance           float64 `gorm:"column:balance"`
-	FrozenBalance     float64 `gorm:"column:frozen_balance"`
-	ReleaseBalance    float64 `gorm:"column:release_balance"`
-	IsLock            int     `gorm:"column:is_lock"`
-	MemberId          int64   `gorm:"column:member_id"`
-	Version           int     `gorm:"column:version"`
-	CoinId            int64   `gorm:"column:coin_id"`
-	ToReleased        float64 `gorm:"column:to_released"`
-	CoinName          string  `gorm:"column:coin_name"`
-	AddressPrivateKey string  `gorm:"-"`
+	Id                int64   `gorm:"column:id"`              // 钱包ID
+	Address           string  `gorm:"column:address"`         // 钱包地址
+	Balance           float64 `gorm:"column:balance"`         // 可用余额
+	FrozenBalance     float64 `gorm:"column:frozen_balance"`  // 冻结余额
+	ReleaseBalance    float64 `gorm:"column:release_balance"` // 待释放余额
+	IsLock            int     `gorm:"column:is_lock"`         // 是否锁定
+	MemberId          int64   `gorm:"column:member_id"`       // 用户ID
+	Version           int     `gorm:"column:version"`         // 版本号
+	CoinId            int64   `gorm:"column:coin_id"`         // 币种ID
+	ToReleased        float64 `gorm:"column:to_released"`     // 待释放的金额
+	CoinName          string  `gorm:"column:coin_name"`       // 币种名称
+	AddressPrivateKey string  `gorm:"-"`                      // 地址私钥，不在数据库中存储
 }
 
+// TableName 表名
+// 返回MemberWallet对应的数据库表名
 func (*MemberWallet) TableName() string {
 	return "member_wallet"
 }
 
+// Copy 复制钱包信息到MemberWalletCoin
+// 参数:
+//
+//	coinInfo *mk_client.Coin: 币种信息
+//
+// 返回值:
+//
+//	*MemberWalletCoin: 复制后的钱包信息对象
 func (w *MemberWallet) Copy(coinInfo *mk_client.Coin) *MemberWalletCoin {
 	mc := &MemberWalletCoin{}
 	copier.Copy(mc, w)
@@ -34,17 +46,19 @@ func (w *MemberWallet) Copy(coinInfo *mk_client.Coin) *MemberWalletCoin {
 	return mc
 }
 
+// MemberWalletCoin 用户钱包及币种信息结构体
+// 用于表示用户钱包信息以及关联的币种详细信息
 type MemberWalletCoin struct {
-	Id             int64        `json:"id" from:"id"`
-	Address        string       `json:"address" from:"address"`
-	Balance        float64      `json:"balance" from:"balance"`
-	FrozenBalance  float64      `json:"frozenBalance" from:"frozenBalance"`
-	ReleaseBalance float64      `json:"releaseBalance" from:"releaseBalance"`
-	IsLock         int          `json:"isLock" from:"isLock"`
-	MemberId       int64        `json:"memberId" from:"memberId"`
-	Version        int          `json:"version" from:"version"`
-	Coin           *market.Coin `json:"coin" from:"coinId"`
-	ToReleased     float64      `json:"toReleased" from:"toReleased"`
+	Id             int64        `json:"id" from:"id"`                         // 钱包ID
+	Address        string       `json:"address" from:"address"`               // 钱包地址
+	Balance        float64      `json:"balance" from:"balance"`               // 可用余额
+	FrozenBalance  float64      `json:"frozenBalance" from:"frozenBalance"`   // 冻结余额
+	ReleaseBalance float64      `json:"releaseBalance" from:"releaseBalance"` // 待释放余额
+	IsLock         int          `json:"isLock" from:"isLock"`                 // 是否锁定
+	MemberId       int64        `json:"memberId" from:"memberId"`             // 用户ID
+	Version        int          `json:"version" from:"version"`               // 版本号
+	Coin           *market.Coin `json:"coin" from:"coinId"`                   // 币种信息
+	ToReleased     float64      `json:"toReleased" from:"toReleased"`         // 待释放的金额
 }
 
 // NewMemberWallet 创建一个新的会员钱包及其对应币种信息。
