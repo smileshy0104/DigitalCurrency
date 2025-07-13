@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"exchange/internal/domain"
 	"exchange/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/exchange/types/order"
@@ -12,6 +13,7 @@ type ExchangeOrderLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
+	orderDomain *domain.OrderDomain
 }
 
 // NewExchangeOrderLogic 创建一个新的 ExchangeOrderLogic 实例
@@ -19,12 +21,14 @@ type ExchangeOrderLogic struct {
 // 参数 svcCtx 是服务的上下文信息，包含了服务所需的各种配置和初始化信息
 func NewExchangeOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ExchangeOrderLogic {
 	return &ExchangeOrderLogic{
-		ctx:    ctx,
-		svcCtx: svcCtx,
-		Logger: logx.WithContext(ctx),
+		ctx:         ctx,
+		svcCtx:      svcCtx,
+		Logger:      logx.WithContext(ctx),
+		orderDomain: domain.NewOrderDomain(svcCtx.Db),
 	}
 }
 
+// FindOrderHistory 查询指定用户的历史订单
 func (l *ExchangeOrderLogic) FindOrderHistory(req *order.OrderReq) (*order.OrderRes, error) {
 	return &order.OrderRes{}, nil
 }

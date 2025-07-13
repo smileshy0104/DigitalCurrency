@@ -18,5 +18,5 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	order := NewOrderHandler(serverCtx)
 	orderGroup := r.Group()
 	orderGroup.Use(midd.Auth(serverCtx.Config.JWT.AccessSecret))
-	orderGroup.Post("/order/history", order.History)
+	orderGroup.Post("/order/history", order.History) // 历史委托订单 所有的订单
 }

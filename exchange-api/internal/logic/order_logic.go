@@ -18,7 +18,8 @@ type OrderLogic struct {
 	svcCtx      *svc.ServiceContext // 服务上下文，提供了访问其他服务或资源的上下文
 }
 
-func (l *OrderLogic) History(req *types.ExchangeReq) (interface{}, interface{}) {
+// History 方法用于获取订单历史记录。
+func (l *OrderLogic) History(req *types.ExchangeReq) (interface{}, error) {
 	// 创建一个带有超时的上下文，以确保请求不会无限期地等待。
 	// 这里设置的超时时间是5秒，旨在防止在服务调用响应缓慢时导致资源浪费或潜在的死锁情况。
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -37,6 +38,7 @@ func (l *OrderLogic) History(req *types.ExchangeReq) (interface{}, interface{}) 
 	if err != nil {
 		return nil, err
 	}
+	// 创建一个切片，用于存储返回的订单信息
 	list := orderRes.List
 	b := make([]any, len(list))
 	for i := range list {

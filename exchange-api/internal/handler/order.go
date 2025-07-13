@@ -22,6 +22,7 @@ func NewOrderHandler(svcCtx *svc.ServiceContext) *OrderHandler {
 	}
 }
 
+// History 历史委托订单 所有的订单
 func (h *OrderHandler) History(w http.ResponseWriter, r *http.Request) {
 	// 解析请求路径以获取交易请求对象。
 	var req types.ExchangeReq
@@ -37,7 +38,7 @@ func (h *OrderHandler) History(w http.ResponseWriter, r *http.Request) {
 
 	// 创建资产逻辑处理对象。
 	l := logic.NewOrderLogic(r.Context(), h.svcCtx)
-	// 调用逻辑层方法，根据符号查找钱包信息。
+	// 调用逻辑层方法，获取订单历史。
 	resp, err := l.History(&req)
 
 	result := common.NewResult().Deal(resp, err)
