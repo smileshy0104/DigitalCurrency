@@ -6,6 +6,8 @@ import (
 	"exchange/internal/dao"
 	"exchange/internal/model"
 	"exchange/internal/repo"
+	"grpc-common/market/mk_client"
+	"grpc-common/ucenter/uc_client"
 )
 
 // OrderDomain 交易货币模块
@@ -48,6 +50,13 @@ func (d *OrderDomain) FindOrderCurrent(ctx context.Context, symbol string, page 
 // FindCurrentTradingCount 查询当前用户在指定交易对下的订单数（交易中的订单）。
 func (d *OrderDomain) FindCurrentTradingCount(ctx context.Context, userId int64, symbol string, direction string) (int64, error) {
 	return d.OrderRepo.FindCurrentTradingCount(ctx, userId, symbol, model.DirectionMap.Code(direction))
+}
+
+// AddOrder 添加订单
+func (d *OrderDomain) AddOrder(ctx context.Context, conn db.DbConn, order *model.ExchangeOrder,
+	coin *mk_client.ExchangeCoin, baseWallet *uc_client.MemberWallet, coinWallet *uc_client.MemberWallet) (float64, error) {
+
+	return 0, nil
 }
 
 // NewOrderDomain 创建交易货币模块
