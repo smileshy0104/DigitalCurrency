@@ -6,6 +6,7 @@ import (
 	"exchange/internal/database"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
+	"grpc-common/market/mk_client"
 	"grpc-common/ucenter/uc_client"
 )
 
@@ -13,9 +14,12 @@ import (
 type ServiceContext struct {
 	Config      config.Config         // 配置文件对象
 	Cache       cache.Cache           // 缓存组件
-	MongoClient *database.MongoClient // mongo
 	Db          *db.DB                // 数据库连接
+	MongoClient *database.MongoClient // mongo
 	MemberRpc   uc_client.Member      // 用户中心服务
+	MarketRpc   mk_client.Market      // 市场行情服务
+	AssetRpc    uc_client.Asset       // 资产服务
+	KafkaClient *database.KafkaClient // kafka
 }
 
 // NewServiceContext 创建并初始化一个新的服务上下文。
@@ -30,7 +34,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	redisCache := cache.New(
 		c.CacheRedis,
 		nil,
-		cache.NewStat("mscoin"),
+		cache.NewStat("market"),
 		nil,
 		func(o *cache.Options) {})
 	// 初始化MySQL数据库连接。
@@ -42,5 +46,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		MongoClient: database.ConnectMongo(c.Mongo),
 		Db:          mysql,
 		MemberRpc:   uc_client.NewMember(zrpc.MustNewClient(c.UCenterRpc)),
+		MarketRpc:   mk_client.NewMarket(zrpc.MustNewClient(c.MarketRpc)),
+		AssetRpc:    uc_client.NewAsset(zrpc.MustNewClient(c.UCenterRpc)),
+		KafkaClient: database.NewKafkaClient(c.Kafka),
 	}
 }

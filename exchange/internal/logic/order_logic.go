@@ -6,6 +6,7 @@ import (
 	"exchange/internal/domain"
 	"exchange/internal/model"
 	"exchange/internal/svc"
+	"fmt"
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/exchange/types/order"
@@ -64,7 +65,7 @@ func (l *OrderLogic) FindOrderCurrent(req *order.OrderReq) (*order.OrderRes, err
 
 // Add 添加订单
 func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
-	// 通过用户id查询用户信息，判断用户是否存在
+	// 1、通过用户id查询用户信息，判断用户是否存在
 	memberInfo, err := l.svcCtx.MemberRpc.FindMemberById(l.ctx, &member.MemberReq{
 		MemberId: req.UserId,
 	})
@@ -80,7 +81,10 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 	if req.Amount <= 0 {
 		return nil, errors.New("数量不能小于等于0")
 	}
-	return &order.AddOrderRes{}, nil
+	fmt.Println(memberInfo)
+	return &order.AddOrderRes{
+		OrderId: "hhhhh",
+	}, nil
 }
 
 func (l *OrderLogic) FindByOrderId(req *order.OrderReq) (*order.ExchangeOrderOrigin, error) {
