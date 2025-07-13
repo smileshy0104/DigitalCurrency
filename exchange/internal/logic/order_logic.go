@@ -6,7 +6,6 @@ import (
 	"exchange/internal/domain"
 	"exchange/internal/model"
 	"exchange/internal/svc"
-	"fmt"
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/exchange/types/order"
@@ -81,7 +80,6 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 	if req.Amount <= 0 {
 		return nil, errors.New("数量不能小于等于0")
 	}
-	fmt.Println(memberInfo)
 	return &order.AddOrderRes{
 		OrderId: "hhhhh",
 	}, nil
