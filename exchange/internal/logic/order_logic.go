@@ -44,8 +44,19 @@ func (l *OrderLogic) FindOrderHistory(req *order.OrderReq) (*order.OrderRes, err
 	}, nil
 }
 
+// FindOrderCurrent 查询当前用户订单（交易中）
 func (l *OrderLogic) FindOrderCurrent(req *order.OrderReq) (*order.OrderRes, error) {
-	return &order.OrderRes{}, nil
+	// 查询对应用户的历史订单
+	orderList, total, err := l.orderDomain.FindOrderCurrent(l.ctx, req.Symbol, req.Page, req.PageSize, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	var list []*order.ExchangeOrder
+	copier.Copy(&list, orderList)
+	return &order.OrderRes{
+		List:  list,
+		Total: total,
+	}, nil
 }
 
 func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
