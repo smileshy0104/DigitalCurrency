@@ -182,6 +182,27 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 	if exchangeCoinInfo.GetMaxTradingOrder() > 0 && count >= exchangeCoinInfo.GetMaxTradingOrder() { // 最大允许同时交易的订单数，0表示不限制
 		return nil, errors.New("超过最大挂单数量 " + fmt.Sprintf("%d", exchangeCoinInfo.GetMaxTradingOrder()))
 	}
+
+	// TODO 6、生成订单
+	// 创建一个新的订单实例
+	exchangeOrder := model.NewOrder()
+	exchangeOrder.MemberId = req.UserId                     // 设置订单的用户ID
+	exchangeOrder.Symbol = req.Symbol                       // 设置订单涉及的交易对符号
+	exchangeOrder.BaseSymbol = baseSymbol                   // 设置基础货币符号
+	exchangeOrder.CoinSymbol = coinSymbol                   // 设置计价货币符号
+	typeCode := model.TypeMap.Code(req.Type)                // 根据请求类型获取订单类型代码
+	exchangeOrder.Type = typeCode                           // 设置挂单类型 0 市场价 1 最低价
+	directionCode := model.DirectionMap.Code(req.Direction) // 根据请求方向获取订单方向代码
+	exchangeOrder.Direction = directionCode                 // 设置订单方向 0 买 1 卖
+	// 根据订单类型设置价格：市价订单价格为0，其他类型订单价格为请求价格
+	if exchangeOrder.Type == model.MarketPrice {
+		exchangeOrder.Price = 0
+	} else {
+		exchangeOrder.Price = req.Price
+	}
+	exchangeOrder.UseDiscount = "0"   // 设置是否使用折扣：当前不使用折扣
+	exchangeOrder.Amount = req.Amount // 设置买入或者卖出量
+
 	return &order.AddOrderRes{
 		OrderId: "hhhhh",
 	}, nil

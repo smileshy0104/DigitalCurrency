@@ -101,3 +101,8 @@ func (old *ExchangeOrder) ToVo() *ExchangeOrderVo {
 	eo.Type = TypeMap.Value(old.Type)          // 将类型代码转换为文本
 	return eo
 }
+
+// NewOrder 创建一个ExchangeOrder
+func NewOrder() *ExchangeOrder {
+	return &ExchangeOrder{}
+}
