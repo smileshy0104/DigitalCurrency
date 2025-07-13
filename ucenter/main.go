@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"grpc-common/ucenter/types/asset"
 	"grpc-common/ucenter/types/login"
+	"grpc-common/ucenter/types/member"
 	"grpc-common/ucenter/types/register"
 	"ucenter/internal/config"
 	"ucenter/internal/server"
@@ -32,6 +33,7 @@ func main() {
 		register.RegisterRegisterServer(grpcServer, server.NewRegisterServer(ctx)) // 注册服务
 		login.RegisterLoginServer(grpcServer, server.NewLoginServer(ctx))          // 登录服务
 		asset.RegisterAssetServer(grpcServer, server.NewAssetServer(ctx))          // 资产服务
+		member.RegisterMemberServer(grpcServer, server.NewMemberServer(ctx))       // 会员服务
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
