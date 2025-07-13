@@ -2,6 +2,8 @@ package main
 
 import (
 	"exchange/internal/config"
+	"exchange/internal/server"
+	"exchange/internal/svc"
 	"flag"
 	"fmt"
 	"github.com/zeromicro/go-zero/core/conf"
@@ -10,6 +12,7 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"grpc-common/exchange/types/order"
 )
 
 var configFile = flag.String("f", "etc/conf.yaml", "the config file")
@@ -21,9 +24,10 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	// 初始化服务上下文
-	//ctx := svc.NewServiceContext(c)
+	ctx := svc.NewServiceContext(c)
 	// 创建rpc服务
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
+		order.RegisterOrderServer(grpcServer, server.NewOrderServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
