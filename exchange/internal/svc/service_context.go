@@ -5,6 +5,8 @@ import (
 	"exchange/internal/config"
 	"exchange/internal/database"
 	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/zrpc"
+	"grpc-common/ucenter/uc_client"
 )
 
 // ServiceContext 服务上下文结构体
@@ -13,6 +15,7 @@ type ServiceContext struct {
 	Cache       cache.Cache           // 缓存组件
 	MongoClient *database.MongoClient // mongo
 	Db          *db.DB                // 数据库连接
+	MemberRpc   uc_client.Member      // 用户中心服务
 }
 
 // NewServiceContext 创建并初始化一个新的服务上下文。
@@ -38,5 +41,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Cache:       redisCache,
 		MongoClient: database.ConnectMongo(c.Mongo),
 		Db:          mysql,
+		MemberRpc:   uc_client.NewMember(zrpc.MustNewClient(c.UCenterRpc)),
 	}
 }

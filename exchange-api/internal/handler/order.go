@@ -68,6 +68,7 @@ func (h *OrderHandler) Current(w http.ResponseWriter, r *http.Request) {
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 
+// Add 添加委托订单(添加订单)
 func (h *OrderHandler) Add(w http.ResponseWriter, r *http.Request) {
 	// 解析请求路径以获取交易请求对象。
 	var req types.ExchangeReq
