@@ -55,6 +55,20 @@ func (d *OrderDao) FindOrderCurrent(ctx context.Context, symbol string, page int
 	return
 }
 
+// FindCurrentTradingCount 查询当前用户在指定交易对下的订单数（交易中的订单）。
+func (d *OrderDao) FindCurrentTradingCount(ctx context.Context, id int64, symbol string, direction int) (total int64, err error) {
+	session := d.conn.Session(ctx)
+	err = session.Model(&model.ExchangeOrder{}).
+		Where("symbol=? and member_id=? and direction=? and status=?", symbol, id, direction, model.Trading).
+		Count(&total).Error
+	return
+}
+
+func (d *OrderDao) Save(ctx context.Context, conn db.DbConn, order *model.ExchangeOrder) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 func NewOrderDao(db *db.DB) *OrderDao {
 	return &OrderDao{
 		conn: gorms.New(db.Conn),

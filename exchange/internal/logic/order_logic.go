@@ -172,6 +172,16 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 		}
 	}
 
+	// TODO 5、限制委托数量
+	// FindCurrentTradingCount 查询当前用户在指定交易对下的订单数（交易中的订单）。
+	count, err := l.orderDomain.FindCurrentTradingCount(l.ctx, req.UserId, req.Symbol, req.Direction)
+	if err != nil {
+		return nil, err
+	}
+	// 限制交易中的订单数
+	if exchangeCoinInfo.GetMaxTradingOrder() > 0 && count >= exchangeCoinInfo.GetMaxTradingOrder() { // 最大允许同时交易的订单数，0表示不限制
+		return nil, errors.New("超过最大挂单数量 " + fmt.Sprintf("%d", exchangeCoinInfo.GetMaxTradingOrder()))
+	}
 	return &order.AddOrderRes{
 		OrderId: "hhhhh",
 	}, nil

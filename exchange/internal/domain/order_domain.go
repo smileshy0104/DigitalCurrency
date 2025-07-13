@@ -45,6 +45,11 @@ func (d *OrderDomain) FindOrderCurrent(ctx context.Context, symbol string, page 
 	return voList, total, nil
 }
 
+// FindCurrentTradingCount 查询当前用户在指定交易对下的订单数（交易中的订单）。
+func (d *OrderDomain) FindCurrentTradingCount(ctx context.Context, userId int64, symbol string, direction string) (int64, error) {
+	return d.OrderRepo.FindCurrentTradingCount(ctx, userId, symbol, model.DirectionMap.Code(direction))
+}
+
 // NewOrderDomain 创建交易货币模块
 func NewOrderDomain(db *db.DB) *OrderDomain {
 	return &OrderDomain{
