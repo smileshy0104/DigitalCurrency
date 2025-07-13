@@ -13,4 +13,7 @@ type Config struct {
 	Mysql              database.MysqlConfig // MySQL 数据库配置
 	CacheRedis         cache.CacheConf      // 缓存 Redis 配置，使用 go-zero 的缓存配置类型
 	Mongo              database.MongoConfig // mongo配置
+	UCenterRpc         zrpc.RpcClientConf   // ucenter rpc 配置
+	MarketRpc          zrpc.RpcClientConf   // market rpc 配置
+	Kafka              database.KafkaConfig // kafka 配置
 }
