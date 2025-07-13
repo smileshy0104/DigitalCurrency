@@ -2,11 +2,14 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"exchange/internal/domain"
+	"exchange/internal/model"
 	"exchange/internal/svc"
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/exchange/types/order"
+	"grpc-common/ucenter/types/member"
 )
 
 // OrderLogic 用于处理汇率转换的逻辑
@@ -59,7 +62,24 @@ func (l *OrderLogic) FindOrderCurrent(req *order.OrderReq) (*order.OrderRes, err
 	}, nil
 }
 
+// Add 添加订单
 func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
+	// 通过用户id查询用户信息，判断用户是否存在
+	memberInfo, err := l.svcCtx.MemberRpc.FindMemberById(l.ctx, &member.MemberReq{
+		MemberId: req.UserId,
+	})
+	if err != nil {
+		return nil, err
+	}
+	if memberInfo.TransactionStatus == 0 {
+		return nil, errors.New("此用户已经被禁止交易")
+	}
+	if req.Type == model.TypeMap[model.LimitPrice] && req.Price <= 0 {
+		return nil, errors.New("限价模式下价格不能小于等于0")
+	}
+	if req.Amount <= 0 {
+		return nil, errors.New("数量不能小于等于0")
+	}
 	return &order.AddOrderRes{}, nil
 }
 

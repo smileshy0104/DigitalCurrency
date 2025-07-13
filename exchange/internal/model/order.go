@@ -1,6 +1,7 @@
 package model
 
 import (
+	"common/enum"
 	"github.com/jinzhu/copier"
 )
 
@@ -36,10 +37,11 @@ const (
 	Completed
 	Canceled
 	OverTimed
+	Init
 )
 
-// statusMap 订单状态代码到文本的映射
-var statusMap = map[int]string{
+// StatusMap 订单状态代码到文本的映射
+var StatusMap = enum.Enum{
 	Trading:   "TRADING",
 	Completed: "COMPLETED",
 	Canceled:  "CANCELED",
@@ -52,8 +54,8 @@ const (
 	SELL
 )
 
-// directionMap 交易方向代码到文本的映射
-var directionMap = map[int]string{
+// DirectionMap 交易方向代码到文本的映射
+var DirectionMap = enum.Enum{
 	BUY:  "BUY",
 	SELL: "SELL",
 }
@@ -64,8 +66,8 @@ const (
 	LimitPrice
 )
 
-// typeMap 订单类型代码到文本的映射
-var typeMap = map[int]string{
+// TypeMap 订单类型代码到文本的映射
+var TypeMap = enum.Enum{
 	MarketPrice: "MARKET_PRICE",
 	LimitPrice:  "LIMIT_PRICE",
 }
@@ -94,8 +96,8 @@ type ExchangeOrderVo struct {
 func (old *ExchangeOrder) ToVo() *ExchangeOrderVo {
 	eo := &ExchangeOrderVo{}
 	copier.Copy(eo, old)
-	eo.Status = statusMap[old.Status]          // 将状态代码转换为文本
-	eo.Direction = directionMap[old.Direction] // 将方向代码转换为文本
-	eo.Type = typeMap[old.Type]                // 将类型代码转换为文本
+	eo.Status = StatusMap.Value(old.Status)    // 将状态代码转换为文本
+	eo.Direction = DirectionMap[old.Direction] // 将方向代码转换为文本
+	eo.Type = TypeMap.Value(old.Type)          // 将类型代码转换为文本
 	return eo
 }
