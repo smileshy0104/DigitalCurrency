@@ -3,6 +3,7 @@ package domain
 import (
 	"common/db"
 	"context"
+	"exchange/internal/dao"
 	"exchange/internal/model"
 	"exchange/internal/repo"
 )
@@ -18,5 +19,7 @@ func (d *OrderDomain) FindOrderHistory(ctx context.Context, symbol string, page 
 
 // NewOrderDomain 创建交易货币模块
 func NewOrderDomain(db *db.DB) *OrderDomain {
-	return &OrderDomain{}
+	return &OrderDomain{
+		OrderRepo: dao.NewOrderDao(db),
+	}
 }
