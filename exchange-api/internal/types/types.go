@@ -3,41 +3,48 @@
 
 package types
 
+// ExchangeReq 交换请求结构体
+// 用于封装交易所需要的请求参数
 type ExchangeReq struct {
-	Ip          string  `json:"ip,optional" form:"ip,optional"`
-	Symbol      string  `json:"symbol,optional" form:"symbol,optional"`
-	PageNo      int64   `json:"pageNo,optional" form:"pageNo,optional"`
-	PageSize    int64   `json:"pageSize,optional" form:"pageSize,optional"`
-	Price       float64 `json:"price,optional" form:"price,optional"`
-	Amount      float64 `json:"amount,optional" form:"amount,optional"`
-	Direction   string  `json:"direction,optional" form:"direction,optional"`
-	Type        string  `json:"type,optional" form:"type,optional"`
-	UseDiscount float64 `json:"useDiscount,optional" form:"useDiscount,optional"`
+	Ip          string  `json:"ip,optional" form:"ip,optional"`                   // 请求者IP地址
+	Symbol      string  `json:"symbol,optional" form:"symbol,optional"`           // 交易对符号
+	PageNo      int64   `json:"pageNo,optional" form:"pageNo,optional"`           // 页码
+	PageSize    int64   `json:"pageSize,optional" form:"pageSize,optional"`       // 每页大小
+	Price       float64 `json:"price,optional" form:"price,optional"`             // 挂单价格
+	Amount      float64 `json:"amount,optional" form:"amount,optional"`           // 买入或者卖出量
+	Direction   string  `json:"direction,optional" form:"direction,optional"`     // 订单方向 0 买 1 卖
+	Type        string  `json:"type,optional" form:"type,optional"`               // 挂单类型 0 市场价 1 最低价
+	UseDiscount float64 `json:"useDiscount,optional" form:"useDiscount,optional"` // 是否使用折扣
 }
 
+// OrderValid 订单参数验证
+// 验证交易方向(Direction)和交易类型(Type)是否已提供，因为它们是必填项
 func (r *ExchangeReq) OrderValid() bool {
+	// 必填参数验证
 	if r.Direction == "" || r.Type == "" {
 		return false
 	}
 	return true
 }
 
+// ExchangeOrder 交换订单结构体
+// 用于封装交易所订单的相关信息
 type ExchangeOrder struct {
-	Id            int64   `json:"id" from:"id"`
-	OrderId       string  `json:"orderId" from:"orderId"`
-	Amount        float64 `json:"amount" from:"amount"`
-	BaseSymbol    string  `json:"baseSymbol" from:"baseSymbol"`
-	CanceledTime  int64   `json:"canceledTime" from:"canceledTime"`
-	CoinSymbol    string  `json:"coinSymbol" from:"coinSymbol"`
-	CompletedTime int64   `json:"completedTime" from:"completedTime"`
-	Direction     int     `json:"direction" from:"direction"`
-	MemberId      int64   `json:"memberId" from:"memberId"`
-	Price         string  `json:"price" from:"price"`
-	Status        string  `json:"status" from:"status"`
-	Symbol        string  `json:"symbol" from:"symbol"`
-	Time          int64   `json:"time" from:"time"`
-	TradedAmount  float64 `json:"tradedAmount" from:"tradedAmount"`
-	Turnover      float64 `json:"turnover" from:"turnover"`
-	Type          string  `json:"type" from:"type"`
-	UseDiscount   string  `json:"useDiscount" from:"useDiscount"`
+	Id            int64   `json:"id" from:"id"`                       // 订单ID
+	OrderId       string  `json:"orderId" from:"orderId"`             // 订单编号
+	Amount        float64 `json:"amount" from:"amount"`               // 订单数量
+	BaseSymbol    string  `json:"baseSymbol" from:"baseSymbol"`       // 基础币种符号
+	CanceledTime  int64   `json:"canceledTime" from:"canceledTime"`   // 取消时间
+	CoinSymbol    string  `json:"coinSymbol" from:"coinSymbol"`       // 数字货币符号
+	CompletedTime int64   `json:"completedTime" from:"completedTime"` // 完成时间
+	Direction     int     `json:"direction" from:"direction"`         // 交易方向
+	MemberId      int64   `json:"memberId" from:"memberId"`           // 会员ID
+	Price         string  `json:"price" from:"price"`                 // 交易价格
+	Status        string  `json:"status" from:"status"`               // 订单状态
+	Symbol        string  `json:"symbol" from:"symbol"`               // 交易对符号
+	Time          int64   `json:"time" from:"time"`                   // 下单时间
+	TradedAmount  float64 `json:"tradedAmount" from:"tradedAmount"`   // 成交数量
+	Turnover      float64 `json:"turnover" from:"turnover"`           // 成交额
+	Type          string  `json:"type" from:"type"`                   // 订单类型
+	UseDiscount   string  `json:"useDiscount" from:"useDiscount"`     // 是否使用折扣
 }

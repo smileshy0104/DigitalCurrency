@@ -3,6 +3,7 @@ package logic
 import (
 	"common/pages"
 	"context"
+	"errors"
 	"exchange-api/internal/svc"
 	"exchange-api/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -60,6 +61,7 @@ func (l *OrderLogic) History(req *types.ExchangeReq) (*pages.PageResult, error) 
 	return pages.New(b, req.PageNo, req.PageSize, orderRes.Total), nil
 }
 
+// Current 获取当前订单（交易中）
 func (l *OrderLogic) Current(req *types.ExchangeReq) (*pages.PageResult, error) {
 	// 创建一个带有超时的上下文，以确保请求不会无限期地等待。
 	// 这里设置的超时时间是5秒，旨在防止在服务调用响应缓慢时导致资源浪费或潜在的死锁情况。
@@ -89,4 +91,32 @@ func (l *OrderLogic) Current(req *types.ExchangeReq) (*pages.PageResult, error) 
 		b[i] = list[i]
 	}
 	return pages.New(b, req.PageNo, req.PageSize, orderRes.Total), nil
+}
+
+// AddOrder 添加订单
+// 该方法从上下文中获取用户ID，并验证订单请求的合法性
+// 如果请求合法，它将调用订单RPC服务来添加订单
+func (l *OrderLogic) AddOrder(req *types.ExchangeReq) (string, error) {
+	// 获取用户ID
+	value := l.ctx.Value("userId").(int64)
+
+	// 校验请求参数
+	if !req.OrderValid() {
+		return "", errors.New("参数传递错误")
+	}
+
+	// Add 添加订单
+	orderRes, err := l.svcCtx.OrderRpc.Add(l.ctx, &order.OrderReq{
+		Symbol:    req.Symbol,    // 交易对
+		UserId:    value,         // 用户ID
+		Direction: req.Direction, // 订单方向 0 买 1 卖
+		Type:      req.Type,      // 挂单类型 0 市场价 1 最低价
+		Price:     req.Price,     // 交易价格
+		Amount:    req.Amount,    // 交易数量
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return orderRes.OrderId, nil
 }
