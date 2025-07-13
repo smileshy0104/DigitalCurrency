@@ -11,6 +11,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/exchange/types/order"
 	"grpc-common/market/types/market"
+	"grpc-common/ucenter/types/asset"
 	"grpc-common/ucenter/types/member"
 )
 
@@ -66,7 +67,7 @@ func (l *OrderLogic) FindOrderCurrent(req *order.OrderReq) (*order.OrderRes, err
 
 // Add 添加订单
 func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
-	// 1、通过用户id查询用户信息，判断用户是否存在
+	// TODO 1、通过用户id查询用户信息，判断用户是否存在
 	memberInfo, err := l.svcCtx.MemberRpc.FindMemberById(l.ctx, &member.MemberReq{
 		MemberId: req.UserId,
 	})
@@ -82,7 +83,7 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 	if req.Amount <= 0 {
 		return nil, errors.New("购买数量不能小于等于0！")
 	}
-	// 2、通过交易币种名称获取币种信息
+	// TODO 2、通过交易币种名称获取币种信息
 	exchangeCoinInfo, err := l.svcCtx.MarketRpc.FindSymbolInfo(l.ctx, &market.MarketReq{
 		Symbol: req.Symbol, // 交易币种名称，格式：BTC/USDT
 	})
@@ -101,7 +102,7 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 		//根据交易币查询
 		unit = coinSymbol
 	}
-	// 查询货币信息
+	// TODO 3、查询货币信息
 	coinInfo, err := l.svcCtx.MarketRpc.FindCoinInfo(l.ctx, &market.MarketReq{
 		Unit: unit,
 	})
@@ -125,6 +126,52 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 			return nil, errors.New("数量不能低于" + fmt.Sprintf("%f", exchangeCoinInfo.GetMinVolume()))
 		}
 	}
+	// TODO 4、查询用户钱包 BTC/USDT
+	// 查询用户的钱包信息，包括基础货币（如BTC）和交易货币（如USDT）
+	baseWalletInfo, err := l.svcCtx.AssetRpc.FindWalletBySymbol(l.ctx, &asset.AssetReq{
+		UserId:   req.UserId, // 用户id
+		CoinName: baseSymbol, // 货币名称 BTC/USDT
+	})
+	if err != nil {
+		return nil, errors.New("用户钱包不存在该货币BTC！")
+	}
+
+	exCoinWalletInfo, err := l.svcCtx.AssetRpc.FindWalletBySymbol(l.ctx, &asset.AssetReq{
+		UserId:   req.UserId, // 用户id
+		CoinName: coinSymbol, // 货币名称 BTC/USDT
+	})
+	if err != nil {
+		return nil, errors.New("用户钱包不存在该货币USDT！")
+	}
+
+	// 检查用户的钱包是否被锁定，如果任一钱包被锁定，则返回错误
+	if baseWalletInfo.IsLock == 1 || exCoinWalletInfo.IsLock == 1 {
+		return nil, errors.New("用户钱包被锁定！")
+	}
+
+	// 如果是卖出操作，检查是否低于最低限价
+	if req.Direction == model.DirectionMap[model.SELL] && exchangeCoinInfo.GetMinSellPrice() > 0 {
+		if req.Price < exchangeCoinInfo.GetMinSellPrice() || req.Type == model.TypeMap[model.MarketPrice] {
+			return nil, errors.New("不能低于最低限价:" + fmt.Sprintf("%f", exchangeCoinInfo.GetMinSellPrice()))
+		}
+	}
+
+	// 如果是买入操作，检查是否高于最高限价
+	if req.Direction == model.DirectionMap[model.BUY] && exchangeCoinInfo.GetMaxBuyPrice() > 0 {
+		if req.Price > exchangeCoinInfo.GetMaxBuyPrice() || req.Type == model.TypeMap[model.MarketPrice] {
+			return nil, errors.New("不能低于最高限价:" + fmt.Sprintf("%f", exchangeCoinInfo.GetMaxBuyPrice()))
+		}
+	}
+
+	// 检查是否启用了市价买卖，并根据买卖方向判断是否支持市价交易
+	if req.Type == model.TypeMap[model.MarketPrice] {
+		if req.Direction == model.DirectionMap[model.BUY] && exchangeCoinInfo.EnableMarketBuy == 0 {
+			return nil, errors.New("不支持市价购买")
+		} else if req.Direction == model.DirectionMap[model.SELL] && exchangeCoinInfo.EnableMarketSell == 0 {
+			return nil, errors.New("不支持市价出售")
+		}
+	}
+
 	return &order.AddOrderRes{
 		OrderId: "hhhhh",
 	}, nil
