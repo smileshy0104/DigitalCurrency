@@ -26,7 +26,8 @@ func New(db *gorm.DB) *GormConn {
 // Session 使用给定的上下文创建一个新会话
 // ctx: 上下文对象，通常包含请求相关的信息
 func (g *GormConn) Session(ctx context.Context) *gorm.DB {
-	return g.db.WithContext(ctx)
+	//return g.db.WithContext(ctx)
+	return g.db.Session(&gorm.Session{Context: ctx})
 }
 
 // Commit 提交当前事务
@@ -62,4 +63,8 @@ func (g *GormConn) WithTx(fn func(tx *gorm.DB) error) error {
 
 	g.Commit()
 	return nil
+}
+
+func (g *GormConn) Tx(ctx context.Context) *gorm.DB {
+	return g.tx.WithContext(ctx)
 }

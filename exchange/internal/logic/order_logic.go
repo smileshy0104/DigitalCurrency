@@ -1,6 +1,8 @@
 package logic
 
 import (
+	"common/db"
+	"common/db/tran"
 	"context"
 	"errors"
 	"exchange/internal/domain"
@@ -21,6 +23,7 @@ type OrderLogic struct {
 	svcCtx *svc.ServiceContext
 	logx.Logger
 	orderDomain *domain.OrderDomain
+	transaction tran.Transaction
 }
 
 // NewOrderLogic 创建一个新的 OrderLogic 实例
@@ -203,8 +206,41 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 	exchangeOrder.UseDiscount = "0"   // 设置是否使用折扣：当前不使用折扣
 	exchangeOrder.Amount = req.Amount // 设置买入或者卖出量
 
+	// 使用事务处理订单提交和消息发送的过程
+	err = l.transaction.Action(func(conn db.DbConn) error {
+		// 调用AddOrder方法，处理订单的创建和资金冻结
+		money, err := l.orderDomain.AddOrder(l.ctx, conn, exchangeOrder, exchangeCoinInfo, baseWalletInfo, exCoinWalletInfo)
+		if err != nil {
+			// 如果订单提交失败，则返回错误
+			return errors.New("订单提交失败")
+		}
+		fmt.Println("订单提交成功", money)
+		// 通过kafka发消息，通知订单创建成功，此时钱包中的资金应该已被冻结
+		//err = l.kafkaDomain.SendOrderAdd(
+		//    "add-exchange-order",
+		//    req.UserId,
+		//    exchangeOrder.OrderId,
+		//    money,
+		//    req.Symbol,
+		//    exchangeOrder.Direction,
+		//    baseSymbol,
+		//    coinSymbol)
+		//if err != nil {
+		//    // 如果消息发送失败，则返回错误
+		//    return errors.New("发消息失败")
+		//}
+
+		// 如果执行成功，返回nil表示事务可以提交
+		return nil
+	})
+	if err != nil {
+		// 如果事务执行失败，返回空响应体和错误
+		return nil, err
+	}
+
+	// 如果事务执行成功，返回订单ID和空错误，表示订单创建成功
 	return &order.AddOrderRes{
-		OrderId: "hhhhh",
+		OrderId: exchangeOrder.OrderId,
 	}, nil
 }
 

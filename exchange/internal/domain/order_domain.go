@@ -56,7 +56,6 @@ func (d *OrderDomain) FindCurrentTradingCount(ctx context.Context, userId int64,
 	return d.OrderRepo.FindCurrentTradingCount(ctx, userId, symbol, model.DirectionMap.Code(direction))
 }
 
-// AddOrder 添加订单
 // AddOrder 添加订单信息到数据库。
 // 该函数接收一个上下文、数据库连接、订单信息、币种信息以及两个钱包对象作为参数，
 // 并根据订单类型和方向计算所需冻结的资金或币量，最后返回计算结果或错误信息。
