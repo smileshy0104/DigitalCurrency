@@ -41,11 +41,13 @@ func (d *KafkaDomain) SendOrderAdd(topic string, userId int64, orderId string, m
 	m["baseSymbol"] = baseSymbol
 	m["coinSymbol"] = coinSymbol
 	marshal, _ := json.Marshal(m)
+	// 使用Kafka客户端发送消息
 	data := database.KafkaData{
 		Topic: topic,
 		Key:   []byte(orderId),
 		Data:  marshal,
 	}
+	// 同步发送消息
 	err := d.cli.SendSync(data)
 	logx.Info("创建订单，发消息成功,orderId=" + orderId)
 	return err

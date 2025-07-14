@@ -81,30 +81,30 @@ func (w *KafkaClient) Send(data KafkaData) {
 //
 //	data: 包含要发送的消息的主题、键和数据。
 func (k *KafkaClient) SendSync(data KafkaData) error {
-	// 创建一个kafka.Writer实例，配置其地址和负载均衡策略。
+	// 创建一个 kafka.Writer 实例，配置其地址和负载均衡策略。
 	w := &kafka.Writer{
-		Addr:     kafka.TCP(k.c.Addr),
-		Balancer: &kafka.LeastBytes{},
+		Addr:     kafka.TCP(k.c.Addr), // 设置 Kafka 服务器的地址
+		Balancer: &kafka.LeastBytes{}, // 设置负载均衡策略为 LeastBytes，选择最少字节数的分区
 	}
-	k.w = w
+	k.w = w // 将创建的 Writer 实例赋值给 KafkaClient 的 w 字段
 
 	// 准备要发送的消息。
 	messages := []kafka.Message{
 		{
-			Topic: data.Topic,
-			Key:   data.Key,
-			Value: data.Data,
+			Topic: data.Topic, // 消息的主题
+			Key:   data.Key,   // 消息的键，用于分区
+			Value: data.Data,  // 消息的内容
 		},
 	}
 
 	var err error
-	// 使用context来设置操作的超时时间。
+	// 使用 context 来设置操作的超时时间为 10 秒。
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	defer cancel() // 确保在函数结束时调用 cancel，以释放资源
 
 	// 同步发送消息。
-	err = k.w.WriteMessages(ctx, messages...)
-	return err
+	err = k.w.WriteMessages(ctx, messages...) // 将消息写入 Kafka，使用上下文进行超时控制
+	return err                                // 返回可能发生的错误
 }
 
 // Close 关闭Kafka客户端的连接。
