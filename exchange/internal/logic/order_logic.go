@@ -241,10 +241,24 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 	}, nil
 }
 
+// FindByOrderId 根据订单ID查询订单详情。
+// 该方法通过调用orderDomain中的FindOrderByOrderId方法来获取订单信息，
+// 并将获取到的信息复制到ExchangeOrderOrigin对象中返回。
 func (l *OrderLogic) FindByOrderId(req *order.OrderReq) (*order.ExchangeOrderOrigin, error) {
-	return nil, nil
+	// 调用orderDomain中的FindOrderByOrderId方法
+	exchangeOrder, err := l.orderDomain.FindOrderByOrderId(l.ctx, req.OrderId)
+	if err != nil {
+		return nil, err
+	}
+	oo := &order.ExchangeOrderOrigin{}
+	copier.Copy(oo, exchangeOrder)
+	return oo, nil
 }
 
+// CancelOrder 取消指定的订单。
+// 该方法通过调用orderDomain中的UpdateStatusCancel方法来更新订单的状态为取消。
 func (l *OrderLogic) CancelOrder(req *order.OrderReq) (*order.CancelOrderRes, error) {
+	// 调用orderDomain中的UpdateStatusCancel方法
+	l.orderDomain.UpdateStatusCancel(l.ctx, req.OrderId)
 	return nil, nil
 }
