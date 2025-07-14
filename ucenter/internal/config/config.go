@@ -3,17 +3,20 @@ package config
 import (
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
+	"ucenter/internal/database"
 )
 
 // Config 是服务的配置结构体。
 // 它包含了 RPC 服务器配置、MySQL 数据库配置、缓存 Redis 配置和验证码配置。
 type Config struct {
-	zrpc.RpcServerConf                    // RPC 服务器配置，继承自 zrpc.RpcServerConf
-	Mysql              MysqlConfig        // MySQL 数据库配置
-	CacheRedis         cache.CacheConf    // 缓存 Redis 配置，使用 go-zero 的缓存配置类型
-	Captcha            CaptchaConf        // 验证码配置
-	JWT                AuthConfig         // JWT 配置
-	MarketRpc          zrpc.RpcClientConf // Market RPC 配置
+	zrpc.RpcServerConf                      // RPC 服务器配置，继承自 zrpc.RpcServerConf
+	Mysql              MysqlConfig          // MySQL 数据库配置
+	CacheRedis         cache.CacheConf      // 缓存 Redis 配置，使用 go-zero 的缓存配置类型
+	Captcha            CaptchaConf          // 验证码配置
+	JWT                AuthConfig           // JWT 配置
+	MarketRpc          zrpc.RpcClientConf   // Market RPC 配置
+	ExchangeRpc        zrpc.RpcClientConf   // Exchange Rpc 配置
+	Kafka              database.KafkaConfig // Kafka 配置
 }
 
 // MysqlConfig 是 MySQL 数据库的配置结构体。

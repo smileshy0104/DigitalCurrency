@@ -11,10 +11,11 @@ import (
 
 // ServiceContext 服务上下文结构体
 type ServiceContext struct {
-	Config    config.Config    // 配置文件对象
-	Cache     cache.Cache      // 缓存组件
-	Db        *db.DB           // 数据库连接
-	MarketRpc mk_client.Market // market服务客户端
+	Config    config.Config         // 配置文件对象
+	Cache     cache.Cache           // 缓存组件
+	Db        *db.DB                // 数据库连接
+	MarketRpc mk_client.Market      // market服务客户端
+	KafkaCli  *database.KafkaClient // kafka组件
 }
 
 // NewServiceContext 创建并初始化一个新的服务上下文。
