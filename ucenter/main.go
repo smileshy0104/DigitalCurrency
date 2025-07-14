@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 	"grpc-common/ucenter/types/asset"
 	"grpc-common/ucenter/types/login"
 	"grpc-common/ucenter/types/member"
@@ -22,6 +23,8 @@ var configFile = flag.String("f", "etc/conf.yaml", "the config file")
 
 func main() {
 	flag.Parse()
+	//日志的打印格式替换一下
+	logx.MustSetup(logx.LogConf{Stat: false, Encoding: "plain"})
 	// 加载配置文件
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
