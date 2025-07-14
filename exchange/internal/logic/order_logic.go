@@ -24,7 +24,7 @@ type OrderLogic struct {
 	logx.Logger
 	orderDomain *domain.OrderDomain
 	transaction tran.Transaction
-	//kafkaDomain *domain.KafkaDomain
+	kafkaDomain *domain.KafkaDomain
 }
 
 // NewOrderLogic 创建一个新的 OrderLogic 实例
@@ -37,6 +37,7 @@ func NewOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OrderLogic 
 		Logger:      logx.WithContext(ctx),
 		orderDomain: domain.NewOrderDomain(svcCtx.Db),
 		transaction: tran.NewTransaction(svcCtx.Db.Conn),
+		kafkaDomain: domain.NewKafkaDomain(svcCtx.KafkaClient, domain.NewOrderDomain(svcCtx.Db)),
 	}
 }
 
@@ -208,7 +209,7 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 	exchangeOrder.UseDiscount = "0"   // 设置是否使用折扣：当前不使用折扣
 	exchangeOrder.Amount = req.Amount // 设置买入或者卖出量
 
-	// 使用事务处理订单提交和消息发送的过程
+	// TODO 7、使用事务处理订单提交和消息发送的过程
 	err = l.transaction.Action(func(conn db.DbConn) error {
 		// 调用AddOrder方法，处理订单的创建和资金冻结
 		money, err := l.orderDomain.AddOrder(l.ctx, conn, exchangeOrder, exchangeCoinInfo, baseWalletInfo, exCoinWalletInfo)
@@ -218,19 +219,13 @@ func (l *OrderLogic) Add(req *order.OrderReq) (*order.AddOrderRes, error) {
 		}
 		fmt.Println("订单提交成功", money)
 		// 通过kafka发消息，通知订单创建成功，此时钱包中的资金应该已被冻结
-		//err = l.kafkaDomain.SendOrderAdd(
-		//    "add-exchange-order",
-		//    req.UserId,
-		//    exchangeOrder.OrderId,
-		//    money,
-		//    req.Symbol,
-		//    exchangeOrder.Direction,
-		//    baseSymbol,
-		//    coinSymbol)
-		//if err != nil {
-		//    // 如果消息发送失败，则返回错误
-		//    return errors.New("发消息失败")
-		//}
+		err = l.kafkaDomain.SendOrderAdd(
+			"add-exchange-order", req.UserId, exchangeOrder.OrderId, money,
+			req.Symbol, exchangeOrder.Direction, baseSymbol, coinSymbol)
+		if err != nil {
+			// 如果消息发送失败，则返回错误
+			return errors.New("发消息失败")
+		}
 
 		// 如果执行成功，返回nil表示事务可以提交
 		return nil

@@ -114,6 +114,26 @@ func (d *OrderDomain) AddOrder(ctx context.Context, conn db.DbConn, order *model
 	return money, err
 }
 
+// FindOrderByOrderId 根据订单ID查找订单。
+func (d *OrderDomain) FindOrderByOrderId(ctx context.Context, orderId string) (*model.ExchangeOrder, error) {
+	order, err := d.OrderRepo.FindOrderByOrderId(ctx, orderId)
+	// 检查订单是否存在，如果不存在则返回错误。
+	if err == nil && order == nil {
+		return nil, errors.New("orderId 不存在")
+	}
+	return order, nil
+}
+
+// UpdateStatusCancel 更新订单状态为取消。
+func (d *OrderDomain) UpdateStatusCancel(ctx context.Context, orderId string) error {
+	return d.OrderRepo.UpdateStatusCancel(ctx, orderId)
+}
+
+// UpdateOrderStatusTrading 更新订单状态为交易中。
+func (d *OrderDomain) UpdateOrderStatusTrading(ctx context.Context, orderId string) error {
+	return d.OrderRepo.UpdateOrderStatusTrading(ctx, orderId)
+}
+
 // NewOrderDomain 创建交易货币模块
 func NewOrderDomain(db *db.DB) *OrderDomain {
 	return &OrderDomain{

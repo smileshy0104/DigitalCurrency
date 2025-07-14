@@ -5,6 +5,7 @@ import (
 	"common/db/gorms"
 	"context"
 	"exchange/internal/model"
+	"gorm.io/gorm"
 )
 
 type OrderDao struct {
@@ -84,6 +85,68 @@ func (d *OrderDao) Save(ctx context.Context, conn db.DbConn, order *model.Exchan
 	// 使用事务对象保存订单信息，并处理可能发生的错误
 	err := tx.Save(&order).Error
 	// 返回保存操作的结果，如果有错误则返回错误信息
+	return err
+}
+
+// FindOrderByOrderId 根据订单ID查找订单。
+// 参数:
+//
+//	ctx - 上下文，用于传递请求范围的信息。
+//	orderId - 要查找的订单ID。
+//
+// 返回值:
+//
+//	*model.ExchangeOrder - 找到的订单，如果未找到则返回nil。
+//	error - 错误信息，如果执行成功且未找到订单，则返回nil。
+func (e *OrderDao) FindOrderByOrderId(ctx context.Context, orderId string) (order *model.ExchangeOrder, err error) {
+	// 创建数据库会话。
+	session := e.conn.Session(ctx)
+	// 使用订单ID查询订单信息。
+	err = session.Model(&model.ExchangeOrder{}).
+		Where("order_id=?", orderId).Take(&order).Error
+	// 如果未找到订单且没有其他错误，返回nil, nil。
+	if err != nil && err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	// 返回查询到的订单和可能的错误。
+	return
+}
+
+// UpdateStatusCancel 更新订单状态为取消。
+// 参数:
+//
+//	ctx - 上下文，用于传递请求范围的信息。
+//	orderId - 要取消的订单ID。
+//
+// 返回值:
+//
+//	error - 错误信息，如果执行成功则返回nil。
+func (e *OrderDao) UpdateStatusCancel(ctx context.Context, orderId string) error {
+	// 创建数据库会话。
+	session := e.conn.Session(ctx)
+	// 更新订单状态为取消。
+	err := session.Model(&model.ExchangeOrder{}).
+		Where("order_id=?", orderId).Update("status", model.Canceled).Error
+	// 返回更新操作的结果。
+	return err
+}
+
+// UpdateOrderStatusTrading 更新订单状态为交易中。
+// 参数:
+//
+//	ctx - 上下文，用于传递请求范围的信息。
+//	orderId - 要更新状态为交易中的订单ID。
+//
+// 返回值:
+//
+//	error - 错误信息，如果执行成功则返回nil。
+func (e *OrderDao) UpdateOrderStatusTrading(ctx context.Context, orderId string) error {
+	// 创建数据库会话。
+	session := e.conn.Session(ctx)
+	// 更新订单状态为交易中。
+	err := session.Model(&model.ExchangeOrder{}).
+		Where("order_id=?", orderId).Update("status", model.Trading).Error
+	// 返回更新操作的结果。
 	return err
 }
 
