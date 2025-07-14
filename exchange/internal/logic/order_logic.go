@@ -24,6 +24,7 @@ type OrderLogic struct {
 	logx.Logger
 	orderDomain *domain.OrderDomain
 	transaction tran.Transaction
+	//kafkaDomain *domain.KafkaDomain
 }
 
 // NewOrderLogic 创建一个新的 OrderLogic 实例
@@ -35,6 +36,7 @@ func NewOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *OrderLogic 
 		svcCtx:      svcCtx,
 		Logger:      logx.WithContext(ctx),
 		orderDomain: domain.NewOrderDomain(svcCtx.Db),
+		transaction: tran.NewTransaction(svcCtx.Db.Conn),
 	}
 }
 

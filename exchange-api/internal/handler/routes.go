@@ -94,5 +94,5 @@ func (r *Routers) Group() *Routers {
 // Use 设置中间件
 // 参数 middlewares: 中间件列表
 func (r *Routers) Use(middlewares ...rest.Middleware) {
-	r.middlewares = middlewares
+	r.middlewares = append(r.middlewares, middlewares...)
 }
