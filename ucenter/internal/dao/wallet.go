@@ -31,11 +31,29 @@ func (m *MemberWalletDao) FindByIdAndCoinName(ctx context.Context, memId int64, 
 	return
 }
 
+// UpdateFreeze 更新会员钱包中的冻结金额
+// 该函数通过减少余额并增加冻结余额来更新会员的钱包信息
+// 参数:
+//
+//	ctx context.Context: 上下文对象，用于传递请求范围的信息
+//	conn db.DbConn: 数据库连接对象，用于执行数据库操作
+//	memberId int64: 会员ID，用于标识钱包的拥有者
+//	symbol string: 加密货币符号，用于指定钱包中的特定货币
+//	money float64: 金额，表示需要冻结的资金量
+//
+// 返回值:
+//
+//	error: 错误对象，如果执行过程中发生错误，则返回该错误
 func (m *MemberWalletDao) UpdateFreeze(ctx context.Context, conn db.DbConn, memberId int64, symbol string, money float64) error {
+	// 将连接对象转换为GormConn类型
 	con := conn.(*gorms.GormConn)
+	// 获取上下文中的数据库会话
 	session := con.Tx(ctx)
+	// 准备SQL语句，用于更新钱包的余额和冻结余额
 	sql := "update member_wallet set balance=balance-?, frozen_balance=frozen_balance+? where member_id=? and coin_name=?"
+	// 执行SQL语句，减少余额并增加冻结余额
 	err := session.Model(&model.MemberWallet{}).Exec(sql, money, money, memberId, symbol).Error
+	// 返回执行结果的错误信息
 	return err
 }
 

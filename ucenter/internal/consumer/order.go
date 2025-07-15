@@ -142,6 +142,6 @@ func cancelOrder(ctx context.Context, data database.KafkaData, orderId string, o
 		OrderId: orderId, // 通过订单 ID 取消订单
 	})
 	if err != nil {
-		cli.RPut(data) // 如果取消失败，将消息放回 Kafka
+		cli.RPut(data) // 如果取消失败，将消息放回 Kafka 进行消费
 	}
 }
