@@ -31,7 +31,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 		ctx:           ctx,
 		svcCtx:        svcCtx,
 		Logger:        logx.WithContext(ctx),
-		CaptchaDomain: domain.NewCaptchaDomain(svcCtx),
+		CaptchaDomain: domain.NewCaptchaDomain(),
 		MemberDomain:  domain.NewMemberDomain(svcCtx.Db),
 	}
 }

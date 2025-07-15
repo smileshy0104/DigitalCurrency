@@ -34,7 +34,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 		ctx:           ctx,                               // 设置上下文。
 		svcCtx:        svcCtx,                            // 设置服务上下文。
 		Logger:        logx.WithContext(ctx),             // 初始化日志记录器，并绑定上下文。
-		CaptchaDomain: domain.NewCaptchaDomain(svcCtx),   // 初始化验证码领域逻辑。
+		CaptchaDomain: domain.NewCaptchaDomain(),         // 初始化验证码领域逻辑。
 		MemberDomain:  domain.NewMemberDomain(svcCtx.Db), // 初始化会员领域逻辑，并绑定数据库连接。
 	}
 }
