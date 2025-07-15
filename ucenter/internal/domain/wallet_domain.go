@@ -6,6 +6,7 @@ import (
 	"common/op"
 	"common/tools"
 	"context"
+	"errors"
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"grpc-common/market/mk_client"
@@ -115,6 +116,21 @@ func (d *MemberWalletDomain) FindWallet(ctx context.Context, userId int64) (list
 	}
 	// 返回处理后的钱包列表
 	return list, nil
+}
+
+func (d *MemberWalletDomain) Freeze(ctx context.Context, conn db.DbConn, userId int64, money float64, symbol string) error {
+	mw, err := d.memberWalletRepo.FindByIdAndCoinName(ctx, userId, symbol)
+	if err != nil {
+		return err
+	}
+	if mw.Balance < money {
+		return errors.New("余额不足")
+	}
+	err = d.memberWalletRepo.UpdateFreeze(ctx, conn, userId, symbol, money)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (d *MemberWalletDomain) FindWalletByMemIdAndCoin(ctx context.Context, memberId int64, coinName string) (*model.MemberWallet, error) {
