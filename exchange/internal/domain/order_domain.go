@@ -86,6 +86,7 @@ func (d *OrderDomain) AddOrder(ctx context.Context, conn db.DbConn, order *model
 	var money float64
 
 	// 根据订单方向判断是买入还是卖出
+	// 买 花USDT 卖 BTC
 	if order.Direction == model.BUY {
 		// 如果是市价单，直接使用订单的amount作为冻结资金
 		if order.Type == model.MarketPrice {
@@ -101,7 +102,7 @@ func (d *OrderDomain) AddOrder(ctx context.Context, conn db.DbConn, order *model
 	} else {
 		// 如果是卖单，直接使用订单的amount作为冻结币量
 		money = order.Amount
-		// 检查币种钱包余额是否足够冻结
+		// 检查币种钱包余额是否足够冻结（判断想要卖的BTC够不够）
 		if coinWallet.Balance < money {
 			return 0, errors.New("余额不足")
 		}

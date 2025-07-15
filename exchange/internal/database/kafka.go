@@ -75,7 +75,7 @@ func (w *KafkaClient) Send(data KafkaData) {
 	w.closed = false    // 设置已关闭状态为false
 }
 
-// SendSync 同步发送消息到Kafka主题。
+// SendSync TODO “同步”发送消息到Kafka主题。之前的方式是分开read和write是分开的
 // 该方法通过kafka.Writer同步地发送数据到指定的Kafka主题。
 // 参数:
 //
