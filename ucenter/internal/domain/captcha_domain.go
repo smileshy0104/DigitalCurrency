@@ -1,19 +1,12 @@
 package domain
 
-import (
-	"ucenter/internal/svc"
-)
-
 // CaptchaDomain 验证码验证的业务逻辑结构体
 type CaptchaDomain struct {
-	ServiceContext *svc.ServiceContext
 }
 
 // NewCaptchaDomain 创建一个新的CaptchaDomain实例
-func NewCaptchaDomain(ctx *svc.ServiceContext) *CaptchaDomain {
-	return &CaptchaDomain{
-		ServiceContext: ctx,
-	}
+func NewCaptchaDomain() *CaptchaDomain {
+	return &CaptchaDomain{}
 }
 
 // vaptchaReq 验证码验证请求的结构体

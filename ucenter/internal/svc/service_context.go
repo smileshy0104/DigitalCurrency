@@ -3,9 +3,12 @@ package svc
 import (
 	"common/db"
 	"github.com/zeromicro/go-zero/core/stores/cache"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
+	"grpc-common/exchange/ec_client"
 	"grpc-common/market/mk_client"
 	"ucenter/internal/config"
+	"ucenter/internal/consumer"
 	"ucenter/internal/database"
 )
 
@@ -37,11 +40,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	mysql := database.ConnMysql(c.Mysql.DataSource)
 	// 初始化Kafka组件。
 	cli := database.NewKafkaClient(c.Kafka)
-	cli.StartRead("add-exchange-order") // 启动读取add-exchange-order主题的消费者。
-	//order := ec_client.NewOrder(zrpc.MustNewClient(c.ExchangeRpc)) // 创建OrderRpc客户端实例。
-	//conf := c.CacheRedis[0].RedisConf
-	//newRedis := redis.MustNewRedis(conf)
-	//go consumer.ExchangeOrderAdd(newRedis, cli, order, mysql) // 启动消费add-exchange-order主题的消费者。
+	cli.StartRead("add-exchange-order")                            // 启动读取add-exchange-order主题的消费者。
+	order := ec_client.NewOrder(zrpc.MustNewClient(c.ExchangeRpc)) // 创建OrderRpc客户端实例。
+	conf := c.CacheRedis[0].RedisConf
+	newRedis := redis.MustNewRedis(conf)
+	go consumer.ExchangeOrderAdd(newRedis, cli, order, mysql) // 启动消费add-exchange-order主题的消费者。
 	// 返回新的服务上下文对象，包含配置对象和初始化后的缓存组件。
 	return &ServiceContext{
 		Config:    c,
