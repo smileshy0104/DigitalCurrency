@@ -118,29 +118,37 @@ func (d *MemberWalletDomain) FindWallet(ctx context.Context, userId int64) (list
 	return list, nil
 }
 
+// Freeze 方法用于冻结用户钱包中的指定金额
 func (d *MemberWalletDomain) Freeze(ctx context.Context, conn db.DbConn, userId int64, money float64, symbol string) error {
+	// 根据用户 ID 和币种名称查找用户钱包
 	mw, err := d.memberWalletRepo.FindByIdAndCoinName(ctx, userId, symbol)
 	if err != nil {
-		return err
+		return err // 如果查询出错，返回错误
 	}
+	// 检查用户钱包余额是否足够
 	if mw.Balance < money {
-		return errors.New("余额不足")
+		return errors.New("余额不足") // 如果余额不足，返回错误
 	}
+	// 更新钱包冻结金额
 	err = d.memberWalletRepo.UpdateFreeze(ctx, conn, userId, symbol, money)
 	if err != nil {
-		return err
+		return err // 如果更新出错，返回错误
 	}
-	return nil
+	return nil // 成功冻结金额，返回 nil
 }
 
+// FindWalletByMemIdAndCoin 方法用于根据会员 ID 和币种名称查找用户钱包
 func (d *MemberWalletDomain) FindWalletByMemIdAndCoin(ctx context.Context, memberId int64, coinName string) (*model.MemberWallet, error) {
+	// 查找用户钱包
 	mw, err := d.memberWalletRepo.FindByIdAndCoinName(ctx, memberId, coinName)
 	if err != nil {
-		return nil, err
+		return nil, err // 如果查询出错，返回 nil 和错误
 	}
-	return mw, nil
+	return mw, nil // 成功查找，返回用户钱包
 }
 
+// UpdateAddress 方法用于更新用户钱包地址
 func (d *MemberWalletDomain) UpdateAddress(ctx context.Context, wallet *model.MemberWallet) error {
-	return d.memberWalletRepo.UpdateAddress(ctx, wallet)
+	// 更新钱包地址
+	return d.memberWalletRepo.UpdateAddress(ctx, wallet) // 返回更新结果
 }

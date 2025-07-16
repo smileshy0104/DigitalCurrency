@@ -37,14 +37,12 @@ func (s *AssetServer) ResetAddress(ctx context.Context, in *asset.AssetReq) (*as
 	return l.ResetAddress(in)
 }
 
-//
-//
-//func (s *AssetServer) FindTransaction(ctx context.Context, in *asset.AssetReq) (*asset.MemberTransactionList, error) {
-//	l := logic.NewFindTransactionLogic(ctx, s.svcCtx)
-//	return l.FindTransaction(in)
-//}
-//
-//func (s *AssetServer) GetAddress(ctx context.Context, in *asset.AssetReq) (*asset.AddressList, error) {
-//	l := logic.NewGetAddressLogic(ctx, s.svcCtx)
-//	return l.GetAddress(in)
-//}
+func (s *AssetServer) FindTransaction(ctx context.Context, in *asset.AssetReq) (*asset.MemberTransactionList, error) {
+	l := logic.NewAssetLogic(ctx, s.svcCtx)
+	return l.FindTransaction(in)
+}
+
+func (s *AssetServer) GetAddress(ctx context.Context, in *asset.AssetReq) (*asset.AddressList, error) {
+	l := logic.NewAssetLogic(ctx, s.svcCtx)
+	return l.GetAddress(in)
+}

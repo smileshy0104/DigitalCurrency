@@ -96,3 +96,11 @@ func (l *AssetLogic) ResetAddress(req *asset.AssetReq) (*asset.AssetResp, error)
 	}
 	return &asset.AssetResp{}, nil
 }
+
+func (l *AssetLogic) FindTransaction(req *asset.AssetReq) (*asset.MemberTransactionList, error) {
+	return nil, nil
+}
+
+func (l *AssetLogic) GetAddress(req *asset.AssetReq) (*asset.AddressList, error) {
+	return nil, nil
+}

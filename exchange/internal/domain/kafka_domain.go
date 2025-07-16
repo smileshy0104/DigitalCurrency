@@ -112,19 +112,13 @@ func (d *KafkaDomain) WaitAddOrderResult() {
 }
 
 // NewKafkaDomain 创建新的KafkaDomain实例
-// 参数:
-//
-//	cli: Kafka客户端
-//	orderDomain: 订单领域服务
-//
-// 返回值:
-//
-//	*KafkaDomain: 新的KafkaDomain实例
 func NewKafkaDomain(cli *database.KafkaClient, orderDomain *OrderDomain) *KafkaDomain {
+	// 创建一个新的KafkaDomain实例
 	k := &KafkaDomain{
 		cli:         cli,
 		orderDomain: orderDomain,
 	}
+	// 启动一个协程，监听并处理订单初始化完成消息
 	go k.WaitAddOrderResult()
 	return k
 }
