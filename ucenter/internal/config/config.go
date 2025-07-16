@@ -32,6 +32,7 @@ type CaptchaConf struct {
 	Key string // 验证码的 Key
 }
 
+// AuthConfig 是 JWT 配置结构体。
 type AuthConfig struct {
 	AccessSecret string
 	AccessExpire int64

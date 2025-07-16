@@ -40,8 +40,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	mysql := database.ConnMysql(c.Mysql.DataSource)
 	// 初始化Kafka组件。
 	cli := database.NewKafkaClient(c.Kafka)
-	cli.StartRead("add-exchange-order")                            // 启动读取add-exchange-order主题的消费者。
-	order := ec_client.NewOrder(zrpc.MustNewClient(c.ExchangeRpc)) // 创建OrderRpc客户端实例。
+	// 启动读取add-exchange-order主题的消费者。
+	cli.StartRead("add-exchange-order")
+	// 创建OrderRpc客户端实例。
+	order := ec_client.NewOrder(zrpc.MustNewClient(c.ExchangeRpc))
+	// 获取Redis连接实例。
 	conf := c.CacheRedis[0].RedisConf
 	newRedis := redis.MustNewRedis(conf)
 	go consumer.ExchangeOrderAdd(newRedis, cli, order, mysql) // 启动消费add-exchange-order主题的消费者。
