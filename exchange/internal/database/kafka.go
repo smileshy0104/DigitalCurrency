@@ -58,8 +58,8 @@ func (k *KafkaClient) StartWrite() {
 		Balancer: &kafka.LeastBytes{}, // 负载均衡
 	}
 	k.w = w                                          // 将Kafka Writer保存到KafkaClient实例中
-	k.writeChan = make(chan KafkaData, k.c.WriteCap) // 创建一个容量为k.c.WriteCap的通道
-	go k.sendKafka()                                 // 启动一个goroutine来发送消息
+	k.writeChan = make(chan KafkaData, k.c.WriteCap) // 创建一个容量为k.c.WriteCap的通道（发送数据的通道）
+	go k.sendKafka()                                 // 启动一个goroutine来发送消息 sendKafka
 }
 
 // Send 发送数据到写通道
@@ -71,7 +71,7 @@ func (w *KafkaClient) Send(data KafkaData) {
 			w.closed = true
 		}
 	}()
-	w.writeChan <- data // 将数据写入写通道
+	w.writeChan <- data // 将数据写入写通道（发送数据的通道）
 	w.closed = false    // 设置已关闭状态为false
 }
 
@@ -131,18 +131,17 @@ func (w *KafkaClient) Close() {
 }
 
 // sendKafka 是 KafkaClient 的一个方法，负责监听写通道并发送消息到 Kafka
-// 它使用一个无限循环来持续监听写通道中的消息，并尝试将这些消息发送到 Kafka
 func (w *KafkaClient) sendKafka() {
 	for {
 		// 使用 select 语句监听写通道
 		select {
-		case data := <-w.writeChan:
+		case data := <-w.writeChan: // 从写通道接收消息
 			// 将从写通道接收到的消息封装成 Kafka 消息格式
 			messages := []kafka.Message{
 				{
-					Topic: data.Topic,
-					Key:   data.Key,
-					Value: data.Data,
+					Topic: data.Topic, // 消息主题
+					Key:   data.Key,   // 消息键
+					Value: data.Data,  // 消息内容
 				},
 			}
 			// 初始化错误变量
@@ -166,8 +165,8 @@ func (w *KafkaClient) sendKafka() {
 				}
 				// 如果遇到特定错误，进行重试前的短暂休眠
 				if errors.Is(err, kafka.LeaderNotAvailable) || errors.Is(err, context.DeadlineExceeded) {
-					time.Sleep(time.Millisecond * 250)
-					success = false
+					time.Sleep(time.Millisecond * 250) // 短暂休眠
+					success = false                    // 继续重试
 					continue
 				}
 				// 如果遇到其他错误，记录错误信息
@@ -178,7 +177,7 @@ func (w *KafkaClient) sendKafka() {
 			}
 			// 如果所有重试都失败，将消息重新发送到写通道
 			if !success {
-				w.Send(data)
+				w.Send(data) // 重新发送消息
 			}
 		}
 	}
