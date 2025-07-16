@@ -135,6 +135,16 @@ func (d *OrderDomain) UpdateOrderStatusTrading(ctx context.Context, orderId stri
 	return d.OrderRepo.UpdateOrderStatusTrading(ctx, orderId)
 }
 
+// FindOrderListBySymbol 根据交易对和订单状态查询订单列表。
+func (d *OrderDomain) FindOrderListBySymbol(ctx context.Context, symbol string, status int) ([]*model.ExchangeOrder, error) {
+	return d.OrderRepo.FindOrderListBySymbol(ctx, symbol, status)
+}
+
+// UpdateOrderComplete 更新订单完成信息。
+func (d *OrderDomain) UpdateOrderComplete(ctx context.Context, order *model.ExchangeOrder) interface{} {
+	return d.OrderRepo.UpdateOrderComplete(ctx, order.OrderId, order.TradedAmount, order.Turnover, order.Status)
+}
+
 // NewOrderDomain 创建交易货币模块
 func NewOrderDomain(db *db.DB) *OrderDomain {
 	return &OrderDomain{

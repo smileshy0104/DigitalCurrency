@@ -22,28 +22,48 @@ CacheRedis:
   - Host: 8.153.166.227:6379
     Type: node
 
+# 配置MongoDB数据库的连接信息
 Mongo:
+  # MongoDB的连接URL
   Url: "mongodb://8.153.166.227:27018"
+  # 数据库用户名
   Username: "root"
+  # 数据库密码
   Password: "root123456"
+  # 要连接的数据库名称
   DataBase: "mscoin"
 
+# 配置用户中心服务的RPC调用信息
 UCenterRpc:
+  # 使用Etcd作为服务发现机制
   Etcd:
+    # Etcd服务器的地址列表
     Hosts:
       - 8.153.166.227:2379
+    # 在Etcd中注册的RPC服务键名
     Key: ucenter.rpc
+  # 配置RPC调用为非阻塞模式
   NonBlock: true
 
+# 配置市场服务的RPC调用信息
 MarketRpc:
+  # 使用Etcd作为服务发现机制
   Etcd:
+    # Etcd服务器的地址列表
     Hosts:
       - 8.153.166.227:2379
+    # 在Etcd中注册的RPC服务键名
     Key: market.rpc
+  # 配置RPC调用为非阻塞模式
   NonBlock: true
 
+# 配置Kafka消息队列的连接信息
 Kafka:
+  # Kafka服务器的地址
   Addr: localhost:9092
+  # 消息写入通道的容量
   WriteCap: 100
+  # 消息读取通道的容量
   ReadCap: 100
+  # 消费者组的名称
   ConsumerGroup: "exchange-consumer"

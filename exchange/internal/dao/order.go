@@ -89,15 +89,6 @@ func (d *OrderDao) Save(ctx context.Context, conn db.DbConn, order *model.Exchan
 }
 
 // FindOrderByOrderId 根据订单ID查找订单。
-// 参数:
-//
-//	ctx - 上下文，用于传递请求范围的信息。
-//	orderId - 要查找的订单ID。
-//
-// 返回值:
-//
-//	*model.ExchangeOrder - 找到的订单，如果未找到则返回nil。
-//	error - 错误信息，如果执行成功且未找到订单，则返回nil。
 func (e *OrderDao) FindOrderByOrderId(ctx context.Context, orderId string) (order *model.ExchangeOrder, err error) {
 	// 创建数据库会话。
 	session := e.conn.Session(ctx)
@@ -113,14 +104,6 @@ func (e *OrderDao) FindOrderByOrderId(ctx context.Context, orderId string) (orde
 }
 
 // UpdateStatusCancel 更新订单状态为取消。
-// 参数:
-//
-//	ctx - 上下文，用于传递请求范围的信息。
-//	orderId - 要取消的订单ID。
-//
-// 返回值:
-//
-//	error - 错误信息，如果执行成功则返回nil。
 func (e *OrderDao) UpdateStatusCancel(ctx context.Context, orderId string) error {
 	// 创建数据库会话。
 	session := e.conn.Session(ctx)
@@ -132,14 +115,6 @@ func (e *OrderDao) UpdateStatusCancel(ctx context.Context, orderId string) error
 }
 
 // UpdateOrderStatusTrading 更新订单状态为交易中。
-// 参数:
-//
-//	ctx - 上下文，用于传递请求范围的信息。
-//	orderId - 要更新状态为交易中的订单ID。
-//
-// 返回值:
-//
-//	error - 错误信息，如果执行成功则返回nil。
 func (e *OrderDao) UpdateOrderStatusTrading(ctx context.Context, orderId string) error {
 	// 创建数据库会话。
 	session := e.conn.Session(ctx)
@@ -147,6 +122,33 @@ func (e *OrderDao) UpdateOrderStatusTrading(ctx context.Context, orderId string)
 	err := session.Model(&model.ExchangeOrder{}).
 		Where("order_id=?", orderId).Update("status", model.Trading).Error
 	// 返回更新操作的结果。
+	return err
+}
+
+// FindOrderListBySymbol 根据交易对符号和订单状态查找订单列表。
+// 该方法主要用于获取特定交易对和特定状态下的所有订单，常用于订单查询和管理场景。
+func (e *OrderDao) FindOrderListBySymbol(ctx context.Context, symbol string, status int) (list []*model.ExchangeOrder, err error) {
+	// 创建数据库会话
+	session := e.conn.Session(ctx)
+	// 执行查询操作，并处理错误
+	err = session.Model(&model.ExchangeOrder{}).
+		Where("symbol=? and status=?", symbol, status).Find(&list).Error
+	// 返回查询结果和可能的错误
+	return
+}
+
+// UpdateOrderComplete 更新订单为完成状态。
+// 该方法接收订单ID、交易量、营业额和订单状态作为参数，更新数据库中的订单信息。
+// 主要用于在订单完成后，更新订单的详细信息和状态。
+func (e *OrderDao) UpdateOrderComplete(ctx context.Context, orderId string, tradedAmount float64,
+	turnover float64, status int) error {
+	// 创建数据库会话
+	session := e.conn.Session(ctx)
+	// 准备更新SQL语句
+	updateSql := "update exchange_order set traded_amount=?,turnover=?,status=? where order_id=? and status=?"
+	// 执行更新操作，并处理错误
+	err := session.Model(&model.ExchangeOrder{}).Exec(updateSql, tradedAmount, turnover, status, orderId, model.Trading).Error
+	// 返回可能的错误
 	return err
 }
 
