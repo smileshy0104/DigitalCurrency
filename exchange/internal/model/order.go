@@ -7,23 +7,23 @@ import (
 
 // ExchangeOrder 交易订单
 type ExchangeOrder struct {
-	Id            int64   `gorm:"column:id"`             // 订单ID
-	OrderId       string  `gorm:"column:order_id"`       // 订单编号
-	Amount        float64 `gorm:"column:amount"`         // 订单数量
-	BaseSymbol    string  `gorm:"column:base_symbol"`    // 基础币种符号
-	CanceledTime  int64   `gorm:"column:canceled_time"`  // 取消时间戳
-	CoinSymbol    string  `gorm:"column:coin_symbol"`    // 数字币符号
-	CompletedTime int64   `gorm:"column:completed_time"` // 完成时间戳
-	Direction     int     `gorm:"column:direction"`      // 交易方向，0-买入，1-卖出
-	MemberId      int64   `gorm:"column:member_id"`      // 会员ID
-	Price         float64 `gorm:"column:price"`          // 订单价格
-	Status        int     `gorm:"column:status"`         // 订单状态
-	Symbol        string  `gorm:"column:symbol"`         // 交易对符号
-	Time          int64   `gorm:"column:time"`           // 订单创建时间戳
-	TradedAmount  float64 `gorm:"column:traded_amount"`  // 成交数量
-	Turnover      float64 `gorm:"column:turnover"`       // 成交额
-	Type          int     `gorm:"column:type"`           // 订单类型，0-市价单，1-限价单
-	UseDiscount   string  `gorm:"column:use_discount"`   // 是否使用优惠
+	Id            int64   `gorm:"column:id" json:"id"`
+	OrderId       string  `gorm:"column:order_id" json:"orderId"`
+	Amount        float64 `gorm:"column:amount" json:"amount"`
+	BaseSymbol    string  `gorm:"column:base_symbol" json:"baseSymbol"`
+	CanceledTime  int64   `gorm:"column:canceled_time" json:"canceledTime"`
+	CoinSymbol    string  `gorm:"column:coin_symbol" json:"coinSymbol"`
+	CompletedTime int64   `gorm:"column:completed_time" json:"completedTime"`
+	Direction     int     `gorm:"column:direction" json:"direction"`
+	MemberId      int64   `gorm:"column:member_id" json:"memberId"`
+	Price         float64 `gorm:"column:price" json:"price"`
+	Status        int     `gorm:"column:status" json:"status"`
+	Symbol        string  `gorm:"column:symbol" json:"symbol"`
+	Time          int64   `gorm:"column:time" json:"time"`
+	TradedAmount  float64 `gorm:"column:traded_amount" json:"tradedAmount"`
+	Turnover      float64 `gorm:"column:turnover" json:"turnover"`
+	Type          int     `gorm:"column:type" json:"type"`
+	UseDiscount   string  `gorm:"column:use_discount" json:"useDiscount"`
 }
 
 // TableName 返回ExchangeOrder对应的数据库表名
