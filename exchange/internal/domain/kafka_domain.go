@@ -6,6 +6,7 @@ import (
 	"exchange/internal/database"
 	"exchange/internal/model"
 	"github.com/zeromicro/go-zero/core/logx"
+	"time"
 )
 
 // KafkaDomain 实现 Kafka 消息队列
@@ -105,22 +106,22 @@ func (d *KafkaDomain) WaitAddOrderResult() {
 		}
 
 		// 需要发送消息到 Kafka，订单需要加入到撮合交易当中
-		//exchangeOrder.Status = model.Trading
-		//for {
-		//	bytes, _ := json.Marshal(exchangeOrder) // 将订单信息转换为 JSON 格式
-		//	orderData := database.KafkaData{
-		//		Topic: "exchange_order_trading",      // 目标主题
-		//		Key:   []byte(exchangeOrder.OrderId), // 使用订单ID作为消息键
-		//		Data:  bytes,                         // 消息内容
-		//	}
-		//	err := d.cli.SendSync(orderData) // 同步发送消息
-		//	if err != nil {
-		//		logx.Error(err)                    // 记录错误信息
-		//		time.Sleep(250 * time.Millisecond) // 等待后重试
-		//		continue
-		//	}
-		//	break // 发送成功，退出循环
-		//}
+		exchangeOrder.Status = model.Trading
+		for {
+			bytes, _ := json.Marshal(exchangeOrder) // 将订单信息转换为 JSON 格式
+			orderData := database.KafkaData{
+				Topic: "exchange_order_trading",      // 目标主题
+				Key:   []byte(exchangeOrder.OrderId), // 使用订单ID作为消息键
+				Data:  bytes,                         // 消息内容
+			}
+			err := d.cli.SendSync(orderData) // 同步发送消息
+			if err != nil {
+				logx.Error(err)                    // 记录错误信息
+				time.Sleep(250 * time.Millisecond) // 等待后重试
+				continue
+			}
+			break // 发送成功，退出循环
+		}
 	}
 }
 
