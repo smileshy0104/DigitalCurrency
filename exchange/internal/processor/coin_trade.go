@@ -29,11 +29,13 @@ func (c *CoinTradeFactory) Init(marketRpc mk_client.Market, cli *database.KafkaC
 	// 初始化的操作
 	// 查询所有的 exchange_coin 内容，循环创建交易引擎
 	ctx := context.Background()
+	// 查询所有可见的交易货币
 	exchangeCoinRes, err := marketRpc.FindExchangeCoinVisible(ctx, &market.MarketReq{})
 	if err != nil {
 		logx.Error(err) // 记录错误信息
 		return
 	}
+	// 循环创建交易引擎
 	for _, v := range exchangeCoinRes.List {
 		c.AddCoinTrade(v.Symbol, NewCoinTrade(v.Symbol, cli, db)) // 添加交易引擎到工厂
 	}
