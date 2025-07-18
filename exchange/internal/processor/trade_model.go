@@ -54,3 +54,17 @@ func (t TradeQueue) Less(i, j int) bool {
 func (t TradeQueue) Swap(i, j int) {
 	t[i], t[j] = t[j], t[i]
 }
+
+// TradePlate 盘口信息
+type TradePlate struct {
+	Items     []*TradePlateItem `json:"items"`
+	Symbol    string
+	direction int
+	maxDepth  int
+	mux       sync.RWMutex
+}
+
+type TradePlateItem struct {
+	Price  float64 `json:"price"`
+	Amount float64 `json:"amount"`
+}

@@ -57,17 +57,51 @@ func (c *CoinTradeFactory) GetCoinTrade(symbol string) *CoinTrade {
 
 // CoinTrade 撮合交易引擎，每一个交易对 BTC/USDT 都有各自的一个引擎
 type CoinTrade struct {
-	symbol string // 交易对符号
+	symbol          string // 交易对符号
+	buyMarketQueue  TradeTimeQueue
+	bmMux           sync.RWMutex
+	sellMarketQueue TradeTimeQueue
+	smMux           sync.RWMutex
+	buyLimitQueue   *LimitPriceQueue //从高到低
+	sellLimitQueue  *LimitPriceQueue //从低到高
+	buyTradePlate   *TradePlate      //买盘
+	sellTradePlate  *TradePlate      //卖盘
+	kafkaClient     *database.KafkaClient
+	db              *db.DB
 }
 
 // NewCoinTrade 创建新的 CoinTrade 实例
 func NewCoinTrade(symbol string, cli *database.KafkaClient, db *db.DB) *CoinTrade {
-	return &CoinTrade{
-		symbol: symbol, // 设置交易对符号
+	c := &CoinTrade{
+		symbol:      symbol,
+		kafkaClient: cli,
+		db:          db,
+	}
+	c.init()
+	return c
+}
+
+func NewTradePlate(symbol string, direction int) *TradePlate {
+	return &TradePlate{
+		Symbol:    symbol,
+		direction: direction,
+		maxDepth:  100,
 	}
 }
 
 // Trade  撮合交易核心代码
 func (t *CoinTrade) Trade(exchangeOrder *model.ExchangeOrder) {
+
+}
+
+func (t *CoinTrade) init() {
+	t.buyTradePlate = NewTradePlate(t.symbol, model.BUY)
+	t.sellTradePlate = NewTradePlate(t.symbol, model.SELL)
+	t.buyLimitQueue = &LimitPriceQueue{}
+	t.sellLimitQueue = &LimitPriceQueue{}
+	t.initData()
+}
+
+func (t *CoinTrade) initData() {
 
 }
